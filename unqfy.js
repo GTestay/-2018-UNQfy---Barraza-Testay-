@@ -1,7 +1,6 @@
 
 const picklejs = require('picklejs');
 
-
 class UNQfy {
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
@@ -80,6 +79,44 @@ class UNQfy {
     fs.registerClasses(...classes);
     return fs.load(filename);
   }
+}
+
+class Album{
+  constructor(name,tracks,artists){
+      this.name = name;
+      this.tracks = tracks;
+      this.artists = artists;
+  }
+}
+
+
+class Artist{
+  constructor(name,country){
+    this.name = name;
+    this.country = country;
+  }
+  
+}
+
+class Playlist{
+  constructor(name,genres,maxDuration){
+    this.name = name;
+    this.tracks = [];
+    this.genres = genres;
+    this.maxDuration = maxDuration;
+  }
+
+
+}
+
+class Track{
+  constructor(name,duration,genres,album){
+      this.name = name;
+      this.duration = duration;
+      this.genres = genres;
+      this.album = album;
+  }
+
 }
 
 // TODO: exportar todas las clases que necesiten ser utilizadas desde un modulo cliente
