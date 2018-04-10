@@ -2,6 +2,12 @@
 const picklejs = require('picklejs');
 
 class UNQfy {
+  constructor() {
+    this.artist = [];
+    this.albums = [];
+    this.playlist = [];
+  }
+
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
 
@@ -18,6 +24,9 @@ class UNQfy {
   */
   addArtist(params) {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
+    let newArtist = new Artist(params.name, params.country);
+    this.artist.push(newArtist);
+
   }
 
 
@@ -27,6 +36,10 @@ class UNQfy {
   */
   addAlbum(artistName, params) {
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
+    let artist = this.getArtistByName(artistName);
+    const newAlbum = new Album(artist, params.name, params.year);
+    console.log(newAlbum);
+    this.albums.push(newAlbum);
   }
 
 
@@ -41,13 +54,17 @@ class UNQfy {
          duration (number),
          genres (lista de strings)
     */
+    let albumSearched = this.getAlbumByName(albumName);
+    let newTrack = new Track(params.name, params.duration, params.genres, albumSearched);
+    albumSearched.addTrack(newTrack);
   }
 
   getArtistByName(name) {
-
+    return this.artist.find(artist => artist.name == name);
   }
 
   getAlbumByName(name) {
+    return this.albums.find(album => album.name == name);
 
   }
 
@@ -75,31 +92,32 @@ class UNQfy {
   static load(filename = 'unqfy.json') {
     const fs = new picklejs.FileSerializer();
     // TODO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy];
+    const classes = [UNQfy, Album, Artist, Playlist, Track];
     fs.registerClasses(...classes);
     return fs.load(filename);
   }
 }
 
-class Album{
-  constructor(name,tracks,artists){
-      this.name = name;
-      this.tracks = tracks;
-      this.artists = artists;
+class Album {
+  constructor(artist, name, year) {
+    this.name = name;
+    this.year = year;
+    this.tracks = [];
+    this.artist = artist;
   }
 }
 
 
-class Artist{
-  constructor(name,country){
+class Artist {
+  constructor(name, country) {
     this.name = name;
     this.country = country;
   }
-  
+
 }
 
-class Playlist{
-  constructor(name,genres,maxDuration){
+class Playlist {
+  constructor(name, genres, maxDuration) {
     this.name = name;
     this.tracks = [];
     this.genres = genres;
@@ -109,12 +127,12 @@ class Playlist{
 
 }
 
-class Track{
-  constructor(name,duration,genres,album){
-      this.name = name;
-      this.duration = duration;
-      this.genres = genres;
-      this.album = album;
+class Track {
+  constructor(name, duration, genre, album) {
+    this.name = name;
+    this.duration = duration;
+    this.genre = genre;
+    this.album = album;
   }
 
 }

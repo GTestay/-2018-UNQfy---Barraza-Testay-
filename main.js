@@ -20,8 +20,18 @@ function saveUNQfy(unqfy, filename) {
 }
 
 function main() {
+
+  let unqfy = getUNQfy('estado');
+
   console.log('arguments: ');
-  process.argv.forEach(argument => console.log(argument));
+
+  let argumentos = process.argv.slice(2);
+
+  argumentos.forEach(argument => console.log(argument));
+
+
+  saveUNQfy(unqfy, 'estado');
+
 }
 
 main();
