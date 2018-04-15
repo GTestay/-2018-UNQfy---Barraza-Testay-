@@ -1,5 +1,10 @@
 const picklejs = require('picklejs');
 
+function aplanar(array) {
+
+  return array.reduce((arg1, arg2) => arg1.concat(arg2));
+}
+
 class UNQfy {
   constructor() {
     this.artist = [];
@@ -9,15 +14,17 @@ class UNQfy {
 
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
-    return this.albums
-      .map(albums => albums.tracksWithGenres(genres))
-      .filter((track,otherTrack) => track === otherTrack);
+    const albumnsWithFilteredTracks = this.albums.map(albums => albums.tracksWithGenres(genres));
+
+    return aplanar(albumnsWithFilteredTracks);
 
   }
 
 
   getTracksMatchingArtist(artistName) {
+    const albumnsWithFilteredTracks = this.albums.filter(album => album.artist === artistName).map(album => album.tracks);
 
+    return aplanar(albumnsWithFilteredTracks);
   }
 
 
@@ -28,7 +35,6 @@ class UNQfy {
   addArtist(params) {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
     const newArtist = new Artist(params.name, params.country);
-    console.log(newArtist);
     this.artist.push(newArtist);
 
   }
@@ -42,7 +48,6 @@ class UNQfy {
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
     const artist = this.getArtistByName(artistName);
     const newAlbum = new Album(artist, params.name, params.year);
-    console.log(newAlbum);
     this.albums.push(newAlbum);
   }
 
@@ -69,20 +74,15 @@ class UNQfy {
 
   getAlbumByName(name) {
     return this.albums.find(album => album.name === name);
-
   }
 
   getTrackByName(name) {
-    let album = this.albums.find(album => album.hasThisTrack(name));
+    const album = this.albums.find(album => album.hasThisTrack(name));
     return album.getTrack(name);
-
-
-
   }
 
   getPlaylistByName(name) {
     return this.playlists.find(playlist => playlist.name === name);
-
   }
 
   addPlaylist(name, genresToInclude, maxDuration) {
@@ -118,15 +118,17 @@ class Album {
   addTrack(track) {
     this.tracks.push(track);
   }
-  getTrack(name){
+
+  getTrack(name) {
     return this.tracks.find(track => track.name === name);
   }
+
   hasThisTrack(name) {
     return this.tracks.some(track => track.name === name);
   }
 
   tracksWithGenres(genres) {
-    return this.tracks.filter(track => track.genres.includes(genres));
+    return this.tracks.filter(track => track.includesGenres(genres));
   }
 
 }
@@ -155,8 +157,12 @@ class Track {
   constructor(name, duration, genres, album) {
     this.name = name;
     this.duration = duration;
-    this.genres = genres;
+    this.genres = genres || [];
     this.album = album;
+  }
+
+  includesGenres(genres) {
+    return this.genres.some(genre => genres.includes(genre));
   }
 
 }
