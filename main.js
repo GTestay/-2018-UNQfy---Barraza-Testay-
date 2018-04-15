@@ -56,10 +56,10 @@ function isNotUndefined(value) {
   return value != undefined;
 }
 
-function runCommand(UNQfy, func, params, args, message) {
+function runCommand(func, params, args, functionMessage) {
   if(params.every(p => isNotUndefined(args[p]))) {
-    UNQfy[func](args);
-    console.log(message);
+    let v = func(args);
+    console.log(functionMessage(args, v));
   } else {
     console.log("error: se esperaba los siguientes parametros: "+params);
   }
@@ -72,14 +72,23 @@ function main() {
   
   switch(comando) {
   case "addArtist":
-    runCommand(unqfy, comando, ["name", "country"], args, "el artista fue insertado exitosamente");
+    runCommand(a => unqfy[comando](a), ["name", "country"], args, args => "el artista ("+args['name']+") fue insertado exitosamente");
+  break;
   case "help":
     help(process.argv[3]);
+  break;
+  case "searchArtist":
+    runCommand(a => unqfy.getArtistByName(a.name), ["name"], args, (x,a) => {
+      if(isNotUndefined(a)) {
+        return "Artista: "+a.name+" ("+a.country+")";
+      } else {
+        return "Artista inexistente.";
+      }
+});
   break;
   default:
   console.log("error: el comando no es correcto");
   }
-  
   saveUNQfy(unqfy, 'estado.json');
 }
 
