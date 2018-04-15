@@ -1,7 +1,6 @@
 const picklejs = require('picklejs');
 
 function aplanar(array) {
-
   return array.reduce((arg1, arg2) => arg1.concat(arg2));
 }
 
@@ -11,7 +10,7 @@ class UNQfy {
     this.albums = [];
     this.playlists = [];
   }
-
+  
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
     const albumnsWithFilteredTracks = this.albums.map(albums => albums.tracksWithGenres(genres));
@@ -114,23 +113,26 @@ class Album {
     this.tracks = [];
     this.artist = artist;
   }
-
+  
   addTrack(track) {
     this.tracks.push(track);
   }
-
+  
   getTrack(name) {
     return this.tracks.find(track => track.name === name);
   }
-
+  
   hasThisTrack(name) {
     return this.tracks.some(track => track.name === name);
   }
-
+  
   tracksWithGenres(genres) {
     return this.tracks.filter(track => track.includesGenres(genres));
   }
-
+  
+  toString() {
+    return ` name: ${this.name}, year: ${this.year}, artist: ${this.artist} `;
+  }
 }
 
 
@@ -139,7 +141,10 @@ class Artist {
     this.name = name;
     this.country = country;
   }
-
+  
+  toString() {
+    return ` name: ${this.name}, country: ${this.country} `;
+  }
 }
 
 class Playlist {
@@ -157,12 +162,16 @@ class Track {
   constructor(name, duration, genres, album) {
     this.name = name;
     this.duration = duration;
-    this.genres = genres || [];
+    this.genres = genres
     this.album = album;
   }
-
+  
   includesGenres(genres) {
     return this.genres.some(genre => genres.includes(genre));
+  }
+  
+  toString() {
+    return` name: ${this.name}, album: ${this.album.name} `;
   }
 
 }
