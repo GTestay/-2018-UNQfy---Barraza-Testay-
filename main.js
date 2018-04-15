@@ -33,9 +33,9 @@ function isNotUndefined(value) {
   return value != undefined;
 }
 
-function runCommand(func, params, args, message) {
+function runCommand(UNQfy, func, params, args, message) {
   if(params.every(p => isNotUndefined(args[p]))) {
-    func(args);
+    UNQfy[func](args);
     console.log(message);
   } else {
     console.log("error: se esperaba los siguientes parametros: "+params);
@@ -44,12 +44,12 @@ function runCommand(func, params, args, message) {
 
 function main() {
   let unqfy = getUNQfy('estado.json');
-  
   let comando = process.argv[2];
   let args = generarDiccionario(process.argv.slice(3));
+  
   switch(comando) {
   case "addArtist":
-    runCommand(unqfy.addArtist, ["name", "country"], args, "el artista fue insertado exitosamente");
+    runCommand(unqfy, comando, ["name", "country"], args, "el artista fue insertado exitosamente");
   break;
   default:
   console.log("error: el comando no es correcto");
