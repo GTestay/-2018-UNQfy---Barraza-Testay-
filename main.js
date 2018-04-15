@@ -1,4 +1,4 @@
-
+﻿
 
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy');
@@ -29,6 +29,29 @@ function generarDiccionario(array) {
   return dic;
 }
 
+function help(command) {
+  let info;
+  switch(command) {
+    case "addArtist":
+      info=`
+addArtist: agrega un nuevo artista.
+
+params:
+name: nombre del artista
+country: país de procedencia
+`;
+    break;
+    default:
+      info=`
+Escriba 'help comando' para recibir la ayuda de dicho comando.
+
+comandos disponibles:
+addArtist
+`;
+}
+console.log(info);
+}
+
 function isNotUndefined(value) {
   return value != undefined;
 }
@@ -50,6 +73,8 @@ function main() {
   switch(comando) {
   case "addArtist":
     runCommand(unqfy, comando, ["name", "country"], args, "el artista fue insertado exitosamente");
+  case "help":
+    help(process.argv[3]);
   break;
   default:
   console.log("error: el comando no es correcto");
