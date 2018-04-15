@@ -59,7 +59,7 @@ describe('Add, remove and filter data', () => {
     createAndAddArtist(unqfy, 'Guns n\' Roses', 'USA');
     createAndAddAlbum(unqfy, 'Guns n\' Roses', 'Appetite for Destruction', 1987);
     const t0 = createAndAddTrack(unqfy, 'Appetite for Destruction', 'Welcome to the jungle', 200, ['rock', 'hard rock', 'movie']);
-    const t1 = createAndAddTrack(unqfy, 'Appetite for Destruction', "Sweet Child o' Mine", 500, ['rock', 'hard rock', 'pop', 'movie']);
+    const t1 = createAndAddTrack(unqfy, 'Appetite for Destruction', 'Sweet Child o\' Mine', 500, ['rock', 'hard rock', 'pop', 'movie']);
 
     createAndAddArtist(unqfy, 'Michael Jackson', 'USA');
     createAndAddAlbum(unqfy, 'Michael Jackson', 'Thriller', 1987);
@@ -82,9 +82,9 @@ describe('Add, remove and filter data', () => {
     const artist = createAndAddArtist(unqfy, 'Guns n\' Roses', 'USA');
     createAndAddAlbum(unqfy, 'Guns n\' Roses', 'Appetite for Destruction', 1987);
     const t1 = createAndAddTrack(unqfy, 'Appetite for Destruction', 'Welcome to the jungle', 200, ['rock', 'hard rock']);
-    const t2 = createAndAddTrack(unqfy, 'Appetite for Destruction', "It's so easy", 200, ['rock', 'hard rock']);
+    const t2 = createAndAddTrack(unqfy, 'Appetite for Destruction', 'It\'s so easy', 200, ['rock', 'hard rock']);
     createAndAddAlbum(unqfy, 'Guns n\' Roses', 'Use Your Illusion I', 1992);
-    const t3 = createAndAddTrack(unqfy, 'Use Your Illusion I', "Don't Cry", 500, ['rock', 'hard rock']);
+    const t3 = createAndAddTrack(unqfy, 'Use Your Illusion I', 'Don\'t Cry', 500, ['rock', 'hard rock']);
 
     createAndAddArtist(unqfy, 'Michael Jackson', 'USA');
     createAndAddAlbum(unqfy, 'Michael Jackson', 'Thriller', 1987);
@@ -140,7 +140,7 @@ describe('Playlist Creation and properties', () => {
     createAndAddArtist(unqfy, 'Guns n\' Roses', 'USA');
     createAndAddAlbum(unqfy, 'Guns n\' Roses', 'Appetite for Destruction', 1987);
     const t1 = createAndAddTrack(unqfy, 'Appetite for Destruction', 'Welcome to the jungle', 200, ['rock', 'hard rock', 'movie']);
-    createAndAddTrack(unqfy, 'Appetite for Destruction', "Sweet Child o' Mine", 1500, ['rock', 'hard rock', 'pop', 'movie']);
+    createAndAddTrack(unqfy, 'Appetite for Destruction', 'Sweet Child o\' Mine', 1500, ['rock', 'hard rock', 'pop', 'movie']);
 
     createAndAddArtist(unqfy, 'Michael Jackson', 'USA');
     createAndAddAlbum(unqfy, 'Michael Jackson', 'Thriller', 1987);
