@@ -127,12 +127,28 @@ function main() {
     help(process.argv[3]);
     break;
   case 'listAlbum':
-    console.log('Albums:\n');
-    unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist}')`));
+    if(unqfy.album.length > 0) {
+      console.log('Albums:\n');
+      unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist}')`));
+    } else {
+      console.log("No hay albums registrados.");
+    }
     break;
   case 'listArtist':
-    console.log('Artists:\n');
-    unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
+    if(unqfy.artists.length > 0) {
+      console.log('Artists:\n');
+      unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
+    } else {
+      console.log("No hay artistas registrados.");
+    }
+    break;
+  case 'listPlaylist':
+    if(unqfy.playlists.length > 0) {
+      console.log('Playlists:\n');
+      unqfy.playlists.forEach(p => console.log(p.name));
+    } else {
+      console.log("no hay playlist registradas."); 
+    }
     break;
   case 'listTrack':
     runCommand(a => {
@@ -167,6 +183,17 @@ function main() {
         return `no hay tracks del genero: '${a.genre}'.`; 
       }
     }, ['genre'], args);
+    break;
+  case 'removeAlbum':
+    runCommand(a => {
+      const album = unqfy.getAlbumByName(a.name);
+      if(isNotUndefined(album)) {
+        unqfy.removeAlbum(a.name);
+        return `el album '${a.name}', fue eliminado correctamente.`;
+      } else {
+        return `error: el album '${a.name}' no existe.`;
+      }
+    }, ['name'], args);
     break;
   case 'removeArtist':
     runCommand(a => {
