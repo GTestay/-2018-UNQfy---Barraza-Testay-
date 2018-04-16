@@ -13,9 +13,9 @@ class UNQfy {
 
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
-    const albumnsWithFilteredTracks = this.albums.map(albums => albums.tracksWithGenres(genres));
+    const tracksFiltered = this.albums.map(albums => albums.tracksWithGenres(genres));
 
-    return aplanar(albumnsWithFilteredTracks);
+    return aplanar(tracksFiltered);
 
   }
 
@@ -60,10 +60,10 @@ class UNQfy {
     /* El objeto track creado debe soportar (al menos) las propiedades:
                  name (string),
                  duration (number),
-                 genres (lista de strings)
+                 genre (string)
             */
     const albumSearched = this.getAlbumByName(albumName);
-    const newTrack = new Track(params.name, params.duration, params.genres, albumSearched);
+    const newTrack = new Track(params.name, params.duration, params.genre, albumSearched);
     albumSearched.addTrack(newTrack);
   }
 
@@ -95,7 +95,7 @@ class UNQfy {
 
   getTrackByName(name) {
     const album = this.albums.find(album => album.hasThisTrack(name));
-    if(album !== undefined){
+    if (album !== undefined) {
       return album.getTrack(name);
     }
     return undefined;
@@ -162,7 +162,7 @@ class TrackList {
 
   }
 
-  removeTrack(aName){
+  removeTrack(aName) {
     this.tracks = this.tracks.filter(track => track.name !== aName);
   }
 
@@ -197,8 +197,9 @@ class Album extends TrackList {
   }
 
   tracksWithGenres(genres) {
-    return this.tracks.filter(track => track.includesGenres(genres));
+    return this.tracks.filter(track => track.withThisGenres(genres));
   }
+
 
   toString() {
     return ` name: ${this.name}, year: ${this.year}, artist: ${this.artist} `;
@@ -233,19 +234,23 @@ class Playlist extends TrackList {
 }
 
 class Track {
-  constructor(name, duration, genres, album) {
+  constructor(name, duration, genre, album) {
     this.name = name;
     this.duration = duration;
-    this.genres = genres;
+    this.genre = genre;
     this.album = album;
   }
 
-  includesGenres(genre) {
-    return this.genres.includes(genre);
+  withThisGenres(genres) {
+    return genres.includes(this.genre);
+  }
+
+  isThisGenre(genre) {
+    return this.genre === genre;
   }
 
   toString() {
-    return ` name: ${this.name}, album: ${this.album.name} `;
+    return ` name: ${this.name}, album: ${this.album.name}, genre: ${this.genre}, duration: ${this.duration} `;
   }
 
 }

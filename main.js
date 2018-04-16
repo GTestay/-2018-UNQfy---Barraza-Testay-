@@ -20,10 +20,10 @@ function saveUNQfy(unqfy, filename) {
 }
 
 function generarDiccionario(array) {
-  let dic = new Array();
+  const dic = new Array();
   while(array.length > 0) {
-    let param = array.shift();
-    let value = array.shift();
+    const param = array.shift();
+    const value = array.shift();
     dic[param] = value;
   }
   return dic;
@@ -32,8 +32,8 @@ function generarDiccionario(array) {
 function help(command) {
   let info;
   switch(command) {
-    case "addArtist":
-      info=`
+  case 'addArtist':
+    info=`
 addArtist: agrega un nuevo artista.
 
 params:
@@ -41,8 +41,8 @@ name: nombre del artista
 country: país de procedencia
 `;
     break;
-    default:
-      info=`
+  default:
+    info=`
 Escriba 'help comando' para recibir la ayuda de dicho comando.
 
 comandos disponibles:
@@ -57,8 +57,8 @@ searchArtist
 searchAlbum
 SearchTrack
 `;
-}
-console.log(info);
+  }
+  console.log(info);
 }
 
 function isNotUndefined(value) {
@@ -69,169 +69,169 @@ function runCommand(func, params, args) {
   if(params.every(p => isNotUndefined(args[p]))) {
     console.log(func(args));
   } else {
-    console.log("error: se esperaba los siguientes parametros: "+params);
+    console.log('error: se esperaba los siguientes parametros: '+params);
   }
 }
 
 function main() {
-  let unqfy = getUNQfy('estado.json');
-  let comando = process.argv[2];
-  let args = generarDiccionario(process.argv.slice(3));
+  const unqfy = getUNQfy('estado.json');
+  const comando = process.argv[2];
+  const args = generarDiccionario(process.argv.slice(3));
   
   switch(comando) {
-  case "addAlbum":
+  case 'addAlbum':
     runCommand(a => {
-      let artist = unqfy.getArtistByName(a.artist);
+      const artist = unqfy.getArtistByName(a.artist);
       if(isNotUndefined(artist)) {
         unqfy.addAlbum(a.artist, a);
         return `Album '${a.name}' de '${a.artist}', fue insertado correctamente.`;
       } else {
-        return "error: artista inexistente.";
+        return 'error: artista inexistente.';
       }
-    }, ["name", "year", "artist"], args);
-  break;
-  case "addArtist":
+    }, ['name', 'year', 'artist'], args);
+    break;
+  case 'addArtist':
     runCommand(a => {
-      let artist = unqfy.getArtistByName(a.name);
+      const artist = unqfy.getArtistByName(a.name);
       if(isNotUndefined(artist)) {
         return `error: el artista '${a.name}' se encuentra registrado.`;
       } else {
         unqfy[comando](a);
         return `el artista '${a.name}', fue insertado correctamente.`;
       }
-    }, ["name", "country"], args);
-  break;
-  case "addPlaylist":
+    }, ['name', 'country'], args);
+    break;
+  case 'addPlaylist':
     runCommand(a => {
-      let p = unqfy.getPlaylistByName(a.name);
+      const p = unqfy.getPlaylistByName(a.name);
       if(isNotUndefined(p)) {
         unqfy.addPlaylist(a.name, a.genre, a.duration);
         return `Playlist '${a.name}' creada exitosamente.`;
       } else {
         return `error: la playlist '${a.name}' ya existe`;
       }
-    }, ["name", "duration", "genres"], args);
-  break;
-  case "addTrack":
+    }, ['name', 'duration', 'genres'], args);
+    break;
+  case 'addTrack':
     runCommand(a => {
-      let album = unqfy.getAlbumByName(a.album);
+      const album = unqfy.getAlbumByName(a.album);
       if(isNotUndefined(album)) {
         unqfy.addTrack(a.album, a);
         return `el track '${a.name}' del album '${a.album}', fue insertado correctamente.`;
       } else {
         return `error: el album '${a.album}' no existe.`;
       }
-    }, ["name","duration","genres","album"], args);
-  break;
-  case "help":
+    }, ['name','duration','genres','album'], args);
+    break;
+  case 'help':
     help(process.argv[3]);
-  break;
-  case "listAlbum":
-    console.log("Albums:\n");
+    break;
+  case 'listAlbum':
+    console.log('Albums:\n');
     unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist}')`));
-  break;
-  case "listArtist":
-    console.log("Artists:\n");
+    break;
+  case 'listArtist':
+    console.log('Artists:\n');
     unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
-  break;
-  case "listTrack":
+    break;
+  case 'listTrack':
     runCommand(a => {
-      let album = unqfy.getAlbumByName(a.album);
+      const album = unqfy.getAlbumByName(a.album);
       if(isNotUndefined(album)) {
-        console.log("Tracks:\n");
+        console.log('Tracks:\n');
         album.tracks.forEach(t => console.log(t.name));
       } else {
-        return "Album inexistente."; 
+        return 'Album inexistente.'; 
       }
-    }, ["album"], args);
-  break;
-  case "listTrackByArtist":
+    }, ['album'], args);
+    break;
+  case 'listTrackByArtist':
     runCommand(a => {
-      let artist = unqfy.getArtistByName(a.name);
+      const artist = unqfy.getArtistByName(a.name);
       if(isNotUndefined(artist)) {
-        console.log("Tracks:\n");
-        let tracks = unqfy.getTracksMatchingArtist(a.name);
+        console.log('Tracks:\n');
+        const tracks = unqfy.getTracksMatchingArtist(a.name);
         tracks.forEach(t => console.log(t.name));
       } else {
         return `error: el artista '${a.name}' no existe.`; 
       }
-    }, ["name"], args);
-  break;
-  case "listTrackByGenre":
+    }, ['name'], args);
+    break;
+  case 'listTrackByGenre':
     runCommand(a => {
-      let tracks = unqfy.getTracksMatchingGenres([a.genre]);
+      const tracks = unqfy.getTracksMatchingGenres([a.genre]);
       if(tracks.length > 0) {
-        console.log("Tracks:\n");
+        console.log('Tracks:\n');
         tracks.forEach(t => console.log(t.name));
       } else {
         return `no hay tracks del genero: '${a.genre}'.`; 
       }
-    }, ["genre"], args);
-  break;
-  case "removeArtist":
+    }, ['genre'], args);
+    break;
+  case 'removeArtist':
     runCommand(a => {
-      let artist = unqfy.getArtistByName(a.name);
+      const artist = unqfy.getArtistByName(a.name);
       if(isNotUndefined(artist)) {
         unqfy.removeArtist(a.name);
         return `el artista '${a.name}', fue eliminado correctamente.`;
       } else {
         return `error: el artista '${a.name}' no existe.`;
       }
-    }, ["name"], args);
-  break;
-  case "removeTrack":
+    }, ['name'], args);
+    break;
+  case 'removeTrack':
     runCommand(a => {
-      let track = unqfy.getTrackByName(a.name);
+      const track = unqfy.getTrackByName(a.name);
       if(isNotUndefined(track)) {
         unqfy.removeTrack(a.name);
         return `el track '${a.name}', fue eliminado correctamente.`;
       } else {
         return `error: el track '${a.name}' no existe.`;
       }
-    }, ["name"], args);
-  break;
-  case "searchAlbum":
+    }, ['name'], args);
+    break;
+  case 'searchAlbum':
     runCommand(a => {
-      let album = unqfy.getAlbumByName(a.name);
+      const album = unqfy.getAlbumByName(a.name);
       if(isNotUndefined(album)) {
-        return "album: "+album;
+        return 'album: '+album;
       } else {
-        return "Album inexistente.";
+        return 'Album inexistente.';
       }
-    }, ["name"], args);
-  break;
-  case "searchArtist":
+    }, ['name'], args);
+    break;
+  case 'searchArtist':
     runCommand(a => {
-      let artist = unqfy.getArtistByName(a.name);
+      const artist = unqfy.getArtistByName(a.name);
       if(isNotUndefined(artist)) {
-        return "Artista: "+artist;
+        return 'Artista: '+artist;
       } else {
-        return "Artista inexistente.";
+        return 'Artista inexistente.';
       }
-    }, ["name"], args);
-  break;
-  case "searchPlaylist":
+    }, ['name'], args);
+    break;
+  case 'searchPlaylist':
     runCommand(a => {
-      let p = unqfy.getPlaylistByName(a.name);
+      const p = unqfy.getPlaylistByName(a.name);
       if(isNotUndefined(p)) {
-        return "PlayList: "+p;
+        return 'PlayList: '+p;
       } else {
-        return "Error: playlist inexistente.";
+        return 'Error: playlist inexistente.';
       }
-    }, ["name"], args);
-  break;
-  case "searchTrack":
+    }, ['name'], args);
+    break;
+  case 'searchTrack':
     runCommand(a => {
-      let track = unqfy.getTrackByName(a.name);
+      const track = unqfy.getTrackByName(a.name);
       if(isNotUndefined(track)) {
-        return "Track: "+track;
+        return 'Track: '+track;
       } else {
-        return "track inexistente.";
+        return 'track inexistente.';
       }
-    }, ["name"], args);
-  break;
+    }, ['name'], args);
+    break;
   default:
-  console.log("error: el comando no es correcto");
+    console.log('error: el comando no es correcto');
   }
   saveUNQfy(unqfy, 'estado.json');
 }
