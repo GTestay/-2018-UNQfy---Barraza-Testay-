@@ -92,8 +92,13 @@ function main() {
   break;
   case "addArtist":
     runCommand(a => {
-      unqfy[comando](a);
-      return `el artista '${a.name}', fue insertado correctamente.`;
+      let artist = unqfy.getArtistByName(a.name);
+      if(isNotUndefined(artist)) {
+        return `error: el artista '${a.name}' se encuentra registrado.`;
+      } else {
+        unqfy[comando](a);
+        return `el artista '${a.name}', fue insertado correctamente.`;
+      }
     }, ["name", "country"], args);
   break;
   case "addTrack":
@@ -129,6 +134,18 @@ function main() {
       }
     }, ["album"], args);
   break;
+  case "listTrackByArtist":
+    runCommand(a => {
+      let artist = unqfy.getArtistByName(a.name);
+      if(isNotUndefined(artist)) {
+        console.log("Tracks:\n");
+        let tracks = unqfy.getTracksMatchingArtist(a.name);
+        tracks.forEach(t => console.log(t.name));
+      } else {
+        return `error: el artista '${a.name}' no existe.`; 
+      }
+    }, ["name"], args);
+  break;
   case "listTrackByGenre":
     runCommand(a => {
       let tracks = unqfy.getTracksMatchingGenres([a.genre]);
@@ -139,6 +156,28 @@ function main() {
         return `no hay tracks del genero: '${a.genre}'.`; 
       }
     }, ["genre"], args);
+  break;
+  case "removeArtist":
+    runCommand(a => {
+      let artist = unqfy.getArtistByName(a.name);
+      if(isNotUndefined(artist)) {
+        unqfy.removeArtist(a.name);
+        return `el artista '${a.name}', fue eliminado correctamente.`;
+      } else {
+        return `error: el artista '${a.name}' no existe.`;
+      }
+    }, ["name"], args);
+  break;
+  case "removeTrack":
+    runCommand(a => {
+      let track = unqfy.getTrackByName(a.name);
+      if(isNotUndefined(track)) {
+        unqfy.removeTrack(a.name);
+        return `el track '${a.name}', fue eliminado correctamente.`;
+      } else {
+        return `error: el track '${a.name}' no existe.`;
+      }
+    }, ["name"], args);
   break;
   case "searchAlbum":
     runCommand(a => {
@@ -157,6 +196,16 @@ function main() {
         return "Artista: "+artist;
       } else {
         return "Artista inexistente.";
+      }
+    }, ["name"], args);
+  break;
+  case "searchPlaylist":
+    runCommand(a => {
+      let p = unqfy.getPlaylistByName(a.name);
+      if(isNotUndefined(p)) {
+        return "PlayList: "+p;
+      } else {
+        return "Error: playlist inexistente.";
       }
     }, ["name"], args);
   break;
