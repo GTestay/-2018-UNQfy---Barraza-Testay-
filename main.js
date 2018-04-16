@@ -74,7 +74,7 @@ function main() {
     runCommand(a => {
       let artist = unqfy.getArtistByName(a.artist);
       if(isNotUndefined(artist)) {
-        unqfy.addAlbum(a.name, a);
+        unqfy.addAlbum(a.artist, a);
         return `Album '${a.name}' de '${a.artist}', fue insertado correctamente.`;
       } else {
         return "error: artista inexistente.";
