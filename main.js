@@ -127,12 +127,20 @@ function main() {
     help(process.argv[3]);
     break;
   case 'listAlbum':
-    console.log('Albums:\n');
-    unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist}')`));
+    if(unqfy.album.length > 0) {
+      console.log('Albums:\n');
+      unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist}')`));
+    } else {
+      console.log("No hay albums registrados.");
+    }
     break;
   case 'listArtist':
-    console.log('Artists:\n');
-    unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
+    if(unqfy.artists.length > 0) {
+      console.log('Artists:\n');
+      unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
+    } else {
+      console.log("No hay artistas registrados.");
+    }
     break;
   case 'listPlaylist':
     if(unqfy.playlists.length > 0) {
