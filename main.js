@@ -79,7 +79,7 @@ function main() {
       } else {
         return "error: artista inexistente.";
       }
-    }, ["name", "year", "artist"], args, args => `el album ((${args['name']}) fue insertado exitosamente`);
+    }, ["name", "year", "artist"], args);
   break;
   case "addArtist":
     runCommand(a => {
@@ -87,26 +87,49 @@ function main() {
       return `el artista '${a.name}', fue insertado correctamente.`;
     }, ["name", "country"], args);
   break;
+  case "addTrack":
+    runCommand(a => {
+      let album = unqfy.getAlbumByName(a.album);
+      if(isNotUndefined(album)) {
+        unqfy.addTrack(a.album, a);
+        return `el track '${a.name}' del album '${a.album}', fue insertado correctamente.`;
+      } else {
+        return `error: el album '${a.album}' no existe.`;
+      }
+    }, ["name","duration","genres","album"], args);
+  break;
   case "help":
     help(process.argv[3]);
   break;
   case "searchAlbum":
-    runCommand(a => unqfy.getAlbumByName(a.name), ["name"], args, (x,a) => {
-      if(isNotUndefined(a)) {
-        return "album: "+a;
+    runCommand(a => {
+      let album = unqfy.getAlbumByName(a.name);
+      if(isNotUndefined(album)) {
+        return "album: "+album;
       } else {
         return "Album inexistente.";
       }
-});
+    }, ["name"], args);
   break;
   case "searchArtist":
-    runCommand(a => unqfy.getArtistByName(a.name), ["name"], args, (x,a) => {
-      if(isNotUndefined(a)) {
-        return "Artista: "+a;
+    runCommand(a => {
+      let artist = unqfy.getArtistByName(a.name);
+      if(isNotUndefined(artist)) {
+        return "Artista: "+artist;
       } else {
         return "Artista inexistente.";
       }
-});
+    }, ["name"], args);
+  break;
+  case "searchTrack":
+    runCommand(a => {
+      let track = unqfy.getTrackByName(a.name);
+      if(isNotUndefined(track)) {
+        return "Track: "+track;
+      } else {
+        return "track inexistente.";
+      }
+    }, ["name"], args);
   break;
   default:
   console.log("error: el comando no es correcto");
