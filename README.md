@@ -1,4 +1,4 @@
-# -2018-UNQfy---Barraza-Testay-
+﻿# -2018-UNQfy---Barraza-Testay-
 Trabajo Práctico de Seminario - Taller de Servicios Web, Universidad Nacional de Quilmes.
 
 
@@ -20,8 +20,8 @@ node main.js addArtist name unNombre country unPais
 node main.js addAlbum name unNombre year unAño artist unArtista 
 | crea un album y lo agrega a su respectivo dueño.
 
-node main.js addPlaylist name unNombre duration unaDuracion genres "generos en ca de na dos" 
-| crea un artista y lo agrega a unqfy
+node main.js addPlaylist name unNombre duration unaDuracion genres "generos separados por comas y sin espacios" 
+| crea una playlist con canciones de ese género.
 
 node main.js addTrack name unNombre duration unaDuracion genre genero album unAlbum 
 | crea una cancion y la agrega al album.
@@ -33,26 +33,26 @@ node main.js listAlbum
 | lista todos los albumnes. 
 
 node main.js listTrack 
-| lista todas las canciones de unqfy..
+| lista todas las canciones registradas.
 
 node main.js listTrackByArtist  name unNombre
 | lista todas las canciones de un artista.
 
-node main.js listTrackAlbum  album unAlbum
+node main.js listTrackByAlbum  name unAlbum
 | lista todas las canciones de un album.
 
-node main.js listTrackByGenre genre unGenero 
-| lista todas las canciones de un genero.
+node main.js listTrackByGenre genres "generos separados por coma y sin espacios"
+| lista todas las canciones de un o unos generos.
 
 node main.js searchArtist name unNombre 
-| busca el artista con ese nombre. 
+| Búsca y muestra la información de dicho artista.
 
 node main.js searchAlbum name unNombre 
-| busca el album con ese nombre.
+| busca y muestra la información del album con ese nombre.
 
 node main.js searchTrack name unNombre 
-| busca la cancion con ese nombre.
+| busca y muestra la información de la cancion con ese nombre.
 
 node main.js searchPlaylist name unNombre 
-| busca la playlist con ese nombre.
+| información sobre la playlist indicada.
 
