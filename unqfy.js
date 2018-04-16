@@ -6,11 +6,11 @@ function aplanar(array) {
 
 class UNQfy {
   constructor() {
-    this.artist = [];
+    this.artists = [];
     this.albums = [];
     this.playlists = [];
   }
-  
+
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
     const albumnsWithFilteredTracks = this.albums.map(albums => albums.tracksWithGenres(genres));
@@ -34,7 +34,7 @@ class UNQfy {
   addArtist(params) {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
     const newArtist = new Artist(params.name, params.country);
-    this.artist.push(newArtist);
+    this.artists.push(newArtist);
 
   }
 
@@ -67,8 +67,17 @@ class UNQfy {
     albumSearched.addTrack(newTrack);
   }
 
+  removeTrack(aName) {
+    this.removeTrackFromAlbum(aName);
+    this.removeTrackFromPlaylist(aName);
+  }
+
+  removeArtist(aName) {
+    this.artists = this.artists.filter(artist => artist.name === aName);
+  }
+
   getArtistByName(name) {
-    return this.artist.find(artist => artist.name === name);
+    return this.artists.find(artist => artist.name === name);
   }
 
   getAlbumByName(name) {
@@ -95,21 +104,10 @@ class UNQfy {
     this.playlists.push(newPlaylist);
   }
 
-  save(filename = 'estado.json') {
-    new picklejs.FileSerializer().serialize(filename, this);
-  }
-
-  static load(filename = 'estado.json') {
-    const fs = new picklejs.FileSerializer();
-    // TODO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Album, Artist, Playlist, Track];
-    fs.registerClasses(...classes);
-    return fs.load(filename);
-  }
 
   putRandomTracksInPlaylist(aPlaylist) {
 
-    let tracksWithTheSpecifiedGenres = this.getTracksMatchingGenres(aPlaylist.genres);
+    const tracksWithTheSpecifiedGenres = this.getTracksMatchingGenres(aPlaylist.genres);
 
 
     tracksWithTheSpecifiedGenres.forEach((actualTrack) => {
@@ -123,32 +121,71 @@ class UNQfy {
 
     return aPlaylist;
   }
+
+  //Persistence
+  save(filename = 'estado.json') {
+    new picklejs.FileSerializer().serialize(filename, this);
+  }
+
+  static load(filename = 'estado.json') {
+    const fs = new picklejs.FileSerializer();
+    // TODO: Agregar a la lista todas las clases que necesitan ser instanciadas
+    const classes = [UNQfy, Album, Artist, Playlist, Track, TrackList];
+    fs.registerClasses(...classes);
+    return fs.load(filename);
+  }
+
+  removeTrackFromPlaylist(aName) {
+    this.playlists.forEach(album => album.removeTrack(aName));
+  }
+
+  removeTrackFromAlbum(aName) {
+    this.albums.forEach(album => album.removeTrack(aName));
+  }
 }
 
-class Album {
-  constructor(artist, name, year) {
+class TrackList {
+  constructor(name) {
     this.name = name;
-    this.year = year;
     this.tracks = [];
-    this.artist = artist;
+
   }
-  
-  addTrack(track) {
-    this.tracks.push(track);
+
+
+  addTrack(aTrack) {
+    this.tracks.push(aTrack);
   }
-  
+
   getTrack(name) {
     return this.tracks.find(track => track.name === name);
   }
-  
+
+  duration() {
+    return this.tracks.map(track => track.duration)
+      .reduce((duration1, duration2) => duration1 + duration2, 0);
+  }
+
+}
+
+class Album extends TrackList {
+  constructor(artist, name, year) {
+    super(name);
+    this.year = year;
+    this.artist = artist;
+  }
+
+  addTrack(track) {
+    this.tracks.push(track);
+  }
+
   hasThisTrack(name) {
     return this.tracks.some(track => track.name === name);
   }
-  
+
   tracksWithGenres(genres) {
     return this.tracks.filter(track => track.includesGenres(genres));
   }
-  
+
   toString() {
     return ` name: ${this.name}, year: ${this.year}, artist: ${this.artist} `;
   }
@@ -160,49 +197,41 @@ class Artist {
     this.name = name;
     this.country = country;
   }
-  
+
   toString() {
     return ` name: ${this.name}, country: ${this.country} `;
   }
 }
 
-class Playlist {
+class Playlist extends TrackList {
 
   constructor(name, genres, maxDuration) {
-    this.name = name;
-    this.tracks = [];
+    super(name);
     this.genres = genres;
     this.maxDuration = maxDuration;
-  }
-
-  duration() {
-    return this.tracks.map(track => track.duration)
-      .reduce((duration1, duration2) => duration1 + duration2, 0);
   }
 
   hasTrack(aTrack) {
     return this.tracks.includes(aTrack);
   }
 
-  addTrack(aTrack) {
-    this.tracks.push(aTrack);
-  }
+
 }
 
 class Track {
   constructor(name, duration, genres, album) {
     this.name = name;
     this.duration = duration;
-    this.genres = genres
+    this.genres = genres;
     this.album = album;
   }
-  
+
   includesGenres(genres) {
     return this.genres.some(genre => genres.includes(genre));
   }
-  
+
   toString() {
-    return` name: ${this.name}, album: ${this.album.name} `;
+    return ` name: ${this.name}, album: ${this.album.name} `;
   }
 
 }
