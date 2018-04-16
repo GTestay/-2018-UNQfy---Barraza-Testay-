@@ -1,7 +1,7 @@
 const picklejs = require('picklejs');
 
 function aplanar(array) {
-  return array.reduce((arg1, arg2) => arg1.concat(arg2));
+  return array.reduce((arg1, arg2) => arg1.concat(arg2), []);
 }
 
 class UNQfy {
@@ -18,7 +18,6 @@ class UNQfy {
     return aplanar(tracksFiltered);
 
   }
-
 
   getTracksMatchingArtist(artistName) {
     const albumnsWithFilteredTracks = this.albums.filter(album => album.artist === artistName).map(album => album.tracks);
@@ -67,13 +66,12 @@ class UNQfy {
     albumSearched.addTrack(newTrack);
   }
 
-  removeTrack(aName) {
-    this.removeTrackFromAlbum(aName);
-    this.removeTrackFromPlaylist(aName);
-  }
-
   removeArtist(aName) {
     this.artists = this.artists.filter(artist => artist.name !== aName);
+    let tracksToDelete = this.albums.filter(album => album.artist === aName).map(album => album.tracks);
+
+    this.albums = this.albums.filter(album => album.artist !== aName);
+    this.playlists = this.playlists.forEach(playlist => playlist.removeTracks(tracksToDelete));
   }
 
   removePlaylist(aName) {
@@ -82,8 +80,20 @@ class UNQfy {
 
   removeAlbum(aName) {
     this.albums = this.albums.filter(album => album.name !== aName);
-
   }
+
+  removeTrack(aName) {
+    this.removeTrackFromAlbum(aName);
+    this.removeTrackFromPlaylist(aName);
+  }
+  removeTrackFromPlaylist(aName) {
+    this.playlists.forEach(playlist => playlist.removeTrack(aName));
+  }
+
+  removeTrackFromAlbum(aName) {
+    this.albums.forEach(album => album.removeTrack(aName));
+  }
+
 
   getArtistByName(name) {
     return this.artists.find(artist => artist.name === name);
@@ -146,13 +156,6 @@ class UNQfy {
     return fs.load(filename);
   }
 
-  removeTrackFromPlaylist(aName) {
-    this.playlists.forEach(playlist => playlist.removeTrack(aName));
-  }
-
-  removeTrackFromAlbum(aName) {
-    this.albums.forEach(album => album.removeTrack(aName));
-  }
 }
 
 class TrackList {
@@ -164,6 +167,10 @@ class TrackList {
 
   removeTrack(aName) {
     this.tracks = this.tracks.filter(track => track.name !== aName);
+  }
+
+  removeTracks(listOfTracks) {
+    this.tracks = this.tracks.filter(track => listOfTracks.includes(track));
   }
 
   addTrack(aTrack) {
@@ -229,7 +236,6 @@ class Playlist extends TrackList {
   hasTrack(aTrack) {
     return this.tracks.includes(aTrack);
   }
-
 
 }
 
