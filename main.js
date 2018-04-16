@@ -116,7 +116,7 @@ function main() {
   break;
   case "listArtist":
     console.log("Artists:\n");
-    unqfy.artist.forEach(a => console.log(`${a.name} ('${a.country}')`));
+    unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
   break;
   case "listTrack":
     runCommand(a => {
