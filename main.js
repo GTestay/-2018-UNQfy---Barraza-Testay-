@@ -109,7 +109,7 @@ function main() {
       if(isNotUndefined(p)) {
         return `error: la playlist '${a.name}' ya existe`;
       } else {
-        unqfy.addPlaylist(a.name, a.genres, a.duration);
+        unqfy.addPlaylist(a.name, a.genres.split(","), a.duration);
         return `Playlist '${a.name}' creada exitosamente.`;
       }
     }, ['name', 'duration', 'genres'], args);
@@ -192,14 +192,15 @@ function main() {
     break;
   case 'listTrackByGenre':
     runCommand(a => {
-      const tracks = unqfy.getTracksMatchingGenres([a.genre]);
+      const tracks = unqfy.getTracksMatchingGenres(a.genres.split(","));
       if(tracks.length > 0) {
         console.log('Tracks:\n');
         tracks.forEach(t => console.log(t.name));
+        return "\n";
       } else {
         return `no hay tracks del genero: '${a.genre}'.`; 
       }
-    }, ['genre'], args);
+    }, ['genres'], args);
     break;
   case 'removeAlbum':
     runCommand(a => {
