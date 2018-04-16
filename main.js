@@ -211,6 +211,17 @@ function main() {
       }
     }, ['name'], args);
     break;
+  case 'removePlaylist':
+    runCommand(a => {
+      const p = unqfy.getPlaylistByName(a.name);
+      if(isNotUndefined(p)) {
+        unqfy.removePlaylist(a.name);
+        return `La playlist '${a.name}', fue eliminada correctamente.`;
+      } else {
+        return `error: la playlist '${a.name}' no existe.`;
+      }
+    }, ['name'], args);
+    break;
   case 'removeTrack':
     runCommand(a => {
       const track = unqfy.getTrackByName(a.name);
