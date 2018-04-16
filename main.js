@@ -92,8 +92,13 @@ function main() {
   break;
   case "addArtist":
     runCommand(a => {
-      unqfy[comando](a);
-      return `el artista '${a.name}', fue insertado correctamente.`;
+      let artist = unqfy.getArtistByName(a.name);
+      if(isNotUndefined(artist)) {
+        return `error: el artista '${a.name}' se encuentra registrado.`;
+      } else {
+        unqfy[comando](a);
+        return `el artista '${a.name}', fue insertado correctamente.`;
+      }
     }, ["name", "country"], args);
   break;
   case "addTrack":
@@ -139,6 +144,17 @@ function main() {
         return `no hay tracks del genero: '${a.genre}'.`; 
       }
     }, ["genre"], args);
+  break;
+  case "removeArtist":
+    runCommand(a => {
+      let artist = unqfy.getArtistByName(a.name);
+      if(isNotUndefined(artist)) {
+        unqfy.removeArtist(a.name);
+        return `el artista '${a.name}', fue eliminado correctamente.`;
+      } else {
+        return `error: el artista '${a.name}' no existe.`;
+      }
+    }, ["name"], args);
   break;
   case "searchAlbum":
     runCommand(a => {
