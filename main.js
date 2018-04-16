@@ -168,6 +168,17 @@ function main() {
       }
     }, ["name"], args);
   break;
+  case "removeTrack":
+    runCommand(a => {
+      let track = unqfy.getTrackByName(a.name);
+      if(isNotUndefined(track)) {
+        unqfy.removeTrack(a.name);
+        return `el track '${a.name}', fue eliminado correctamente.`;
+      } else {
+        return `error: el track '${a.name}' no existe.`;
+      }
+    }, ["name"], args);
+  break;
   case "searchAlbum":
     runCommand(a => {
       let album = unqfy.getAlbumByName(a.name);
