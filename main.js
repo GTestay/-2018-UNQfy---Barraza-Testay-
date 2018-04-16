@@ -56,10 +56,9 @@ function isNotUndefined(value) {
   return value != undefined;
 }
 
-function runCommand(func, params, args, functionMessage) {
+function runCommand(func, params, args) {
   if(params.every(p => isNotUndefined(args[p]))) {
-    let v = func(args);
-    console.log(functionMessage(args, v));
+    console.log(func(args));
   } else {
     console.log("error: se esperaba los siguientes parametros: "+params);
   }
@@ -71,8 +70,22 @@ function main() {
   let args = generarDiccionario(process.argv.slice(3));
   
   switch(comando) {
+  case "addAlbum":
+    runCommand(a => {
+      let artist = unqfy.getArtistByName(a.artist);
+      if(isNotUndefined(artist)) {
+        unqfy.addAlbum(a.name, a);
+        return `Album '${a.name}' de '${a.artist}', fue insertado correctamente.`;
+      } else {
+        return "error: artista inexistente.";
+      }
+    }, ["name", "year", "artist"], args, args => `el album ((${args['name']}) fue insertado exitosamente`);
+  break;
   case "addArtist":
-    runCommand(a => unqfy[comando](a), ["name", "country"], args, args => "el artista ("+args['name']+") fue insertado exitosamente");
+    runCommand(a => {
+      unqfy[comando](a);
+      return `el artista '${a.name}', fue insertado correctamente.`;
+    }, ["name", "country"], args);
   break;
   case "help":
     help(process.argv[3]);
