@@ -52,6 +52,7 @@ addTrack
 listArtist
 listAlbum
 listTrack
+listTrackByGenre
 searchArtist
 searchAlbum
 SearchTrack
@@ -115,7 +116,7 @@ function main() {
   break;
   case "listArtist":
     console.log("Artists:\n");
-    unqfy.artist.forEach(a => console.log(`${a.name} ('${a.country}')`));
+    unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
   break;
   case "listTrack":
     runCommand(a => {
@@ -127,6 +128,17 @@ function main() {
         return "Album inexistente."; 
       }
     }, ["album"], args);
+  break;
+  case "listTrackByGenre":
+    runCommand(a => {
+      let tracks = unqfy.getTracksMatchingGenres([a.genre]);
+      if(tracks.length > 0) {
+        console.log("Tracks:\n");
+        tracks.forEach(t => console.log(t.name));
+      } else {
+        return `no hay tracks del genero: '${a.genre}'.`; 
+      }
+    }, ["genre"], args);
   break;
   case "searchAlbum":
     runCommand(a => {
