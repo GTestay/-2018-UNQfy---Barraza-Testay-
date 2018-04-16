@@ -176,6 +176,17 @@ function main() {
       }
     }, ['genre'], args);
     break;
+  case 'removeAlbum':
+    runCommand(a => {
+      const album = unqfy.getAlbumByName(a.name);
+      if(isNotUndefined(album)) {
+        unqfy.removeAlbum(a.name);
+        return `el album '${a.name}', fue eliminado correctamente.`;
+      } else {
+        return `error: el album '${a.name}' no existe.`;
+      }
+    }, ['name'], args);
+    break;
   case 'removeArtist':
     runCommand(a => {
       const artist = unqfy.getArtistByName(a.name);
