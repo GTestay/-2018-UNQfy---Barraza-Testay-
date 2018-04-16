@@ -134,6 +134,18 @@ function main() {
       }
     }, ["album"], args);
   break;
+  case "listTrackByArtist":
+    runCommand(a => {
+      let artist = unqfy.getArtistByName(a.name);
+      if(isNotUndefined(artist)) {
+        console.log("Tracks:\n");
+        let tracks = unqfy.getTracksMatchingArtist(a.name);
+        tracks.forEach(t => console.log(t.name));
+      } else {
+        return `error: el artista '${a.name}' no existe.`; 
+      }
+    }, ["name"], args);
+  break;
   case "listTrackByGenre":
     runCommand(a => {
       let tracks = unqfy.getTracksMatchingGenres([a.genre]);
