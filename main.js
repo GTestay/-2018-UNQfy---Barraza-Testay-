@@ -71,7 +71,7 @@ function runCommand(func, params, args) {
   if(params.every(p => isNotUndefined(args[p]))) {
     console.log(func(args));
   } else {
-    console.log('error: se esperaba los siguientes parametros: '+params);
+    console.log(`error: se esperaba los siguientes parametros: ${params} `);
   }
 }
 
@@ -131,17 +131,17 @@ function main() {
   case 'listAlbum':
     if(unqfy.albums.length > 0) {
       console.log('Albums:\n');
-      unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist.name}')`));
+      unqfy.albums.forEach(a => console.log(a.toString()));
     } else {
-      console.log("No hay albums registrados.");
+      console.log('No hay albums registrados.');
     }
     break;
   case 'listArtist':
     if(unqfy.artists.length > 0) {
       console.log('Artists:\n');
-      unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
+      unqfy.artists.forEach(a => console.log(a.toString()));
     } else {
-      console.log("No hay artistas registrados.");
+      console.log('No hay artistas registrados.');
     }
     break;
   case 'listPlaylist':
@@ -149,7 +149,7 @@ function main() {
       console.log('Playlists:\n');
       unqfy.playlists.forEach(p => console.log(p.toString()));
     } else {
-      console.log("no hay playlist registradas."); 
+      console.log('no hay playlist registradas.'); 
     }
     break;
   case 'listTrack':
@@ -158,7 +158,7 @@ function main() {
       console.log(`Tracks (${tracks.length}):\n`);
       tracks.forEach(t => console.log(t.toString()));
     } else {
-      console.log("No hay tracks registrados.");
+      console.log('No hay tracks registrados.');
     }
     break;
   case 'listTrackByAlbum':
@@ -166,8 +166,8 @@ function main() {
       const album = unqfy.getAlbumByName(a.name);
       if(isNotUndefined(album)) {
         console.log('Tracks:\n');
-        album.tracks.forEach(t => console.log(t.name));
-        return "\n";
+        album.tracks.forEach(t => console.log(t.toString()));
+        return '\n';
       } else {
         return 'Album inexistente.'; 
       }
@@ -181,7 +181,7 @@ function main() {
         if(tracks.length > 0) {
           console.log('Tracks:\n');
           tracks.forEach(t => console.log(t.name));
-          return "\n";
+          return '\n';
         } else {
           return `${artist.name} no tiene tracks registrados.`;
         }
@@ -271,11 +271,11 @@ function main() {
       if(isNotUndefined(p)) {
         console.log(`PlayList: '${p.name}'\n`);
         if(p.tracks.length > 0) {
-          p.tracks.forEach(t => console.log("- "+t));
+          p.tracks.forEach(t => console.log(`${t}`));
         } else {
-          console.log("no tiene tracks.");
+          console.log('no tiene tracks.');
         }
-        return "\n";
+        return '\n';
       } else {
         return 'Error: playlist inexistente.';
       }
