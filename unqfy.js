@@ -73,15 +73,15 @@ class UNQfy {
   }
 
   removeArtist(aName) {
-    this.artists = this.artists.filter(artist => artist.name === aName);
+    this.artists = this.artists.filter(artist => artist.name !== aName);
   }
 
   removePlaylist(aName) {
-    this.playlists = this.playlists.filter(playlist => playlist.name === aName);
+    this.playlists = this.playlists.filter(playlist => playlist.name !== aName);
   }
 
   removeAlbum(aName) {
-    this.albums = this.albums.filter(album => album.name === aName);
+    this.albums = this.albums.filter(album => album.name !== aName);
 
   }
 
@@ -95,7 +95,10 @@ class UNQfy {
 
   getTrackByName(name) {
     const album = this.albums.find(album => album.hasThisTrack(name));
-    return album.getTrack(name);
+    if(album !== undefined){
+      return album.getTrack(name);
+    }
+    return undefined;
   }
 
   getPlaylistByName(name) {
@@ -121,7 +124,6 @@ class UNQfy {
 
     tracksWithTheSpecifiedGenres.forEach((actualTrack) => {
       if ((aPlaylist.duration() + actualTrack.duration) <= aPlaylist.maxDuration) {
-        console.log(actualTrack.name, actualTrack.duration);
 
         aPlaylist.addTrack(actualTrack);
       }
@@ -145,7 +147,7 @@ class UNQfy {
   }
 
   removeTrackFromPlaylist(aName) {
-    this.playlists.forEach(album => album.removeTrack(aName));
+    this.playlists.forEach(playlist => playlist.removeTrack(aName));
   }
 
   removeTrackFromAlbum(aName) {
@@ -160,6 +162,9 @@ class TrackList {
 
   }
 
+  removeTrack(aName){
+    this.tracks = this.tracks.filter(track => track.name !== aName);
+  }
 
   addTrack(aTrack) {
     this.tracks.push(aTrack);
@@ -235,8 +240,8 @@ class Track {
     this.album = album;
   }
 
-  includesGenres(genres) {
-    return this.genres.some(genre => genres.includes(genre));
+  includesGenres(genre) {
+    return this.genres.includes(genre);
   }
 
   toString() {
