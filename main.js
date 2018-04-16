@@ -47,6 +47,14 @@ Escriba 'help comando' para recibir la ayuda de dicho comando.
 
 comandos disponibles:
 addArtist
+addAlbum
+addTrack
+listArtist
+listAlbum
+listTrack
+searchArtist
+searchAlbum
+SearchTrack
 `;
 }
 console.log(info);
@@ -100,6 +108,25 @@ function main() {
   break;
   case "help":
     help(process.argv[3]);
+  break;
+  case "listAlbum":
+    console.log("Albums:\n");
+    unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist}')`));
+  break;
+  case "listArtist":
+    console.log("Artists:\n");
+    unqfy.artist.forEach(a => console.log(`${a.name} ('${a.country}')`));
+  break;
+  case "listTrack":
+    runCommand(a => {
+      let album = unqfy.getAlbumByName(a.album);
+      if(isNotUndefined(album)) {
+        console.log("Tracks:\n");
+        album.tracks.forEach(t => console.log(t.name));
+      } else {
+        return "Album inexistente."; 
+      }
+    }, ["album"], args);
   break;
   case "searchAlbum":
     runCommand(a => {
