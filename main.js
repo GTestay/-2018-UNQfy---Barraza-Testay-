@@ -147,7 +147,7 @@ function main() {
   case 'listPlaylist':
     if(unqfy.playlists.length > 0) {
       console.log('Playlists:\n');
-      unqfy.playlists.forEach(p => console.log(p.name));
+      unqfy.playlists.forEach(p => console.log(p.toString()));
     } else {
       console.log("no hay playlist registradas."); 
     }
@@ -156,7 +156,7 @@ function main() {
     const tracks = unqfy.listTracks();
     if(tracks.length > 0) {
       console.log(`Tracks (${tracks.length}):\n`);
-      tracks.forEach(t => console.log(t));
+      tracks.forEach(t => console.log(t.toString()));
     } else {
       console.log("No hay tracks registrados.");
     }

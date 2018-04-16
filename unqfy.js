@@ -86,6 +86,7 @@ class UNQfy {
     this.removeTrackFromAlbum(aName);
     this.removeTrackFromPlaylist(aName);
   }
+
   removeTrackFromPlaylist(aName) {
     this.playlists.forEach(playlist => playlist.removeTrack(aName));
   }
@@ -94,8 +95,8 @@ class UNQfy {
     this.albums.forEach(album => album.removeTrack(aName));
   }
 
-  listTracks(){
-    return aplanar(this.albums.map(album=> album.track));
+  listTracks() {
+    return aplanar(this.albums.map(album => album.tracks));
   }
 
 
@@ -240,7 +241,9 @@ class Playlist extends TrackList {
   hasTrack(aTrack) {
     return this.tracks.includes(aTrack);
   }
-
+  toString(){
+    return `name: ${this.name} size of tracks: ${this.tracks.length} max duration: ${this.maxDuration}`;
+  }
 }
 
 class Track {
