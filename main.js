@@ -134,6 +134,14 @@ function main() {
     console.log('Artists:\n');
     unqfy.artists.forEach(a => console.log(`${a.name} ('${a.country}')`));
     break;
+  case 'listPlaylist':
+    if(unqfy.playlists.length > 0) {
+      console.log('Playlists:\n');
+      unqfy.playlists.forEach(p => console.log(p.name));
+    } else {
+      console.log("no hay playlist registradas."); 
+    }
+    break;
   case 'listTrack':
     runCommand(a => {
       const album = unqfy.getAlbumByName(a.album);
