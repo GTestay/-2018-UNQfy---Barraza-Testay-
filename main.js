@@ -52,6 +52,8 @@ addTrack
 listArtist
 listAlbum
 listTrack
+listTrackByAlbum
+listTrackByArtist
 listTrackByGenre
 searchArtist
 searchAlbum
@@ -151,15 +153,25 @@ function main() {
     }
     break;
   case 'listTrack':
+    const tracks = unqfy.listTracks();
+    if(tracks.length > 0) {
+      console.log('Tracks:\n');
+      tracks.forEach(t => console.log(`${t.name} ('${t.album.name}')`));
+    } else {
+      console.log("No hay tracks registrados.");
+    }
+    break;
+  case 'listTrackByAlbum':
     runCommand(a => {
-      const album = unqfy.getAlbumByName(a.album);
+      const album = unqfy.getAlbumByName(a.name);
       if(isNotUndefined(album)) {
         console.log('Tracks:\n');
         album.tracks.forEach(t => console.log(t.name));
+        return "\n";
       } else {
         return 'Album inexistente.'; 
       }
-    }, ['album'], args);
+    }, ['name'], args);
     break;
   case 'listTrackByArtist':
     runCommand(a => {
@@ -257,7 +269,13 @@ function main() {
     runCommand(a => {
       const p = unqfy.getPlaylistByName(a.name);
       if(isNotUndefined(p)) {
-        return 'PlayList: '+p;
+        console.log(`PlayList: '${p.name}'\n`);
+        if(p.tracks.length > 0) {
+          p.tracks.forEach(t => console.log("- "+t));
+        } else {
+          console.log("no tiene tracks.");
+        }
+        return "\n";
       } else {
         return 'Error: playlist inexistente.';
       }
