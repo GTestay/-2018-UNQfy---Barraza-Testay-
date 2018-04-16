@@ -202,7 +202,7 @@ class Album extends TrackList {
 
 
   toString() {
-    return ` name: ${this.name}, year: ${this.year}, artist: ${this.artist} `;
+    return ` name: ${this.name}, year: ${this.year}, artist: ${this.artist.name} `;
   }
 }
 
