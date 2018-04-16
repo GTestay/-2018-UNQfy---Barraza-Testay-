@@ -165,9 +165,13 @@ function main() {
     runCommand(a => {
       const artist = unqfy.getArtistByName(a.name);
       if(isNotUndefined(artist)) {
-        console.log('Tracks:\n');
         const tracks = unqfy.getTracksMatchingArtist(a.name);
-        tracks.forEach(t => console.log(t.name));
+        if(tracks.length > 0) {
+          console.log('Tracks:\n');
+          tracks.forEach(t => console.log(t.name));
+        } else {
+          console.log(`${artist.name} no tiene tracks registrados.`);
+        }
       } else {
         return `error: el artista '${a.name}' no existe.`; 
       }
