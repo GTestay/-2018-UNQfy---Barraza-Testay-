@@ -76,6 +76,15 @@ class UNQfy {
     this.artists = this.artists.filter(artist => artist.name === aName);
   }
 
+  removePlaylist(aName) {
+    this.playlists = this.playlists.filter(playlist => playlist.name === aName);
+  }
+
+  removeAlbum(aName) {
+    this.albums = this.albums.filter(album => album.name === aName);
+
+  }
+
   getArtistByName(name) {
     return this.artists.find(artist => artist.name === name);
   }
