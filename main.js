@@ -105,10 +105,10 @@ function main() {
     runCommand(a => {
       const p = unqfy.getPlaylistByName(a.name);
       if(isNotUndefined(p)) {
-        unqfy.addPlaylist(a.name, a.genre, a.duration);
-        return `Playlist '${a.name}' creada exitosamente.`;
-      } else {
         return `error: la playlist '${a.name}' ya existe`;
+      } else {
+        unqfy.addPlaylist(a.name, a.genres, a.duration);
+        return `Playlist '${a.name}' creada exitosamente.`;
       }
     }, ['name', 'duration', 'genres'], args);
     break;
