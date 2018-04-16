@@ -127,9 +127,9 @@ function main() {
     help(process.argv[3]);
     break;
   case 'listAlbum':
-    if(unqfy.album.length > 0) {
+    if(unqfy.albums.length > 0) {
       console.log('Albums:\n');
-      unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist}')`));
+      unqfy.albums.forEach(a => console.log(`${a.name} ('${a.artist.name}')`));
     } else {
       console.log("No hay albums registrados.");
     }
