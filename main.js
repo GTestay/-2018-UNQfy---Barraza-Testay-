@@ -101,6 +101,17 @@ function main() {
       }
     }, ["name", "country"], args);
   break;
+  case "addPlaylist":
+    runCommand(a => {
+      let p = unqfy.getPlaylistByName(a.name);
+      if(isNotUndefined(p)) {
+        unqfy.addPlaylist(a.name, a.genre, a.duration);
+        return `Playlist '${a.name}' creada exitosamente.`;
+      } else {
+        return `error: la playlist '${a.name}' ya existe`;
+      }
+    }, ["name", "duration", "genres"], args);
+  break;
   case "addTrack":
     runCommand(a => {
       let album = unqfy.getAlbumByName(a.album);
