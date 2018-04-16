@@ -155,8 +155,8 @@ function main() {
   case 'listTrack':
     const tracks = unqfy.listTracks();
     if(tracks.length > 0) {
-      console.log('Tracks:\n');
-      tracks.forEach(t => console.log(`${t.name} ('${t.album.name}')`));
+      console.log(`Tracks (${tracks.length}):\n`);
+      tracks.forEach(t => console.log(t));
     } else {
       console.log("No hay tracks registrados.");
     }
