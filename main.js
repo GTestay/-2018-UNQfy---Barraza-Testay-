@@ -77,10 +77,19 @@ function main() {
   case "help":
     help(process.argv[3]);
   break;
+  case "searchAlbum":
+    runCommand(a => unqfy.getAlbumByName(a.name), ["name"], args, (x,a) => {
+      if(isNotUndefined(a)) {
+        return "album: "+a;
+      } else {
+        return "Album inexistente.";
+      }
+});
+  break;
   case "searchArtist":
     runCommand(a => unqfy.getArtistByName(a.name), ["name"], args, (x,a) => {
       if(isNotUndefined(a)) {
-        return "Artista: "+a.name+" ("+a.country+")";
+        return "Artista: "+a;
       } else {
         return "Artista inexistente.";
       }
