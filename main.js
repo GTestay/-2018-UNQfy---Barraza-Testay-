@@ -199,6 +199,16 @@ function main() {
       }
     }, ["name"], args);
   break;
+  case "searchPlaylist":
+    runCommand(a => {
+      let p = unqfy.getPlaylistByName(a.name);
+      if(isNotUndefined(p)) {
+        return "PlayList: "+p;
+      } else {
+        return "Error: playlist inexistente.";
+      }
+    }, ["name"], args);
+  break;
   case "searchTrack":
     runCommand(a => {
       let track = unqfy.getTrackByName(a.name);
