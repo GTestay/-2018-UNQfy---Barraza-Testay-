@@ -169,8 +169,9 @@ function main() {
         if(tracks.length > 0) {
           console.log('Tracks:\n');
           tracks.forEach(t => console.log(t.name));
+          return "\n";
         } else {
-          console.log(`${artist.name} no tiene tracks registrados.`);
+          return `${artist.name} no tiene tracks registrados.`;
         }
       } else {
         return `error: el artista '${a.name}' no existe.`; 
