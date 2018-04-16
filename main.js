@@ -105,10 +105,10 @@ function main() {
     runCommand(a => {
       const p = unqfy.getPlaylistByName(a.name);
       if(isNotUndefined(p)) {
-        unqfy.addPlaylist(a.name, a.genre, a.duration);
-        return `Playlist '${a.name}' creada exitosamente.`;
-      } else {
         return `error: la playlist '${a.name}' ya existe`;
+      } else {
+        unqfy.addPlaylist(a.name, a.genres, a.duration);
+        return `Playlist '${a.name}' creada exitosamente.`;
       }
     }, ['name', 'duration', 'genres'], args);
     break;
@@ -169,8 +169,9 @@ function main() {
         if(tracks.length > 0) {
           console.log('Tracks:\n');
           tracks.forEach(t => console.log(t.name));
+          return "\n";
         } else {
-          console.log(`${artist.name} no tiene tracks registrados.`);
+          return `${artist.name} no tiene tracks registrados.`;
         }
       } else {
         return `error: el artista '${a.name}' no existe.`; 
