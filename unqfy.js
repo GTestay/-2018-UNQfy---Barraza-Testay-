@@ -71,7 +71,7 @@ class UNQfy {
     let tracksToDelete = this.albums.filter(album => album.artist === aName).map(album => album.tracks);
 
     this.albums = this.albums.filter(album => album.artist !== aName);
-    this.playlists = this.playlists.forEach(playlist => playlist.removeTracks(tracksToDelete));
+    this.playlists.forEach(playlist => playlist.removeTracks(tracksToDelete));
   }
 
   removePlaylist(aName) {
@@ -92,6 +92,10 @@ class UNQfy {
 
   removeTrackFromAlbum(aName) {
     this.albums.forEach(album => album.removeTrack(aName));
+  }
+
+  listTracks(){
+    return aplanar(this.albums.map(album=> album.track));
   }
 
 
