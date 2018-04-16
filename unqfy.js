@@ -90,7 +90,9 @@ class UNQfy {
               * un metodo duration() que retorne la duración de la playlist.
               * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist
             */
-
+    let newPlaylist = new Playlist(name, genresToInclude, maxDuration);
+    newPlaylist = this.putRandomTracksInPlaylist(newPlaylist);
+    this.playlists.push(newPlaylist);
   }
 
   save(filename = 'estado.json') {
@@ -103,6 +105,23 @@ class UNQfy {
     const classes = [UNQfy, Album, Artist, Playlist, Track];
     fs.registerClasses(...classes);
     return fs.load(filename);
+  }
+
+  putRandomTracksInPlaylist(aPlaylist) {
+
+    let tracksWithTheSpecifiedGenres = this.getTracksMatchingGenres(aPlaylist.genres);
+
+
+    tracksWithTheSpecifiedGenres.forEach((actualTrack) => {
+      if ((aPlaylist.duration() + actualTrack.duration) <= aPlaylist.maxDuration) {
+        console.log(actualTrack.name, actualTrack.duration);
+
+        aPlaylist.addTrack(actualTrack);
+      }
+    });
+
+
+    return aPlaylist;
   }
 }
 
@@ -148,6 +167,7 @@ class Artist {
 }
 
 class Playlist {
+
   constructor(name, genres, maxDuration) {
     this.name = name;
     this.tracks = [];
@@ -155,7 +175,18 @@ class Playlist {
     this.maxDuration = maxDuration;
   }
 
+  duration() {
+    return this.tracks.map(track => track.duration)
+      .reduce((duration1, duration2) => duration1 + duration2, 0);
+  }
 
+  hasTrack(aTrack) {
+    return this.tracks.includes(aTrack);
+  }
+
+  addTrack(aTrack) {
+    this.tracks.push(aTrack);
+  }
 }
 
 class Track {
