@@ -121,7 +121,7 @@ function main() {
       } else {
         return `error: el album '${a.album}' no existe.`;
       }
-    }, ['name','duration','genres','album'], args);
+    }, ['name','duration','genre','album'], args);
     break;
   case 'help':
     help(process.argv[3]);
