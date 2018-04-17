@@ -170,6 +170,10 @@ class TrackList {
 
   }
 
+  genres() {
+    return this.tracks.map(track => track.genre).reduce((genre1, genre2) => genre1 === genre2,[]);
+  }
+
   removeTrack(aName) {
     this.tracks = this.tracks.filter(track => track.name !== aName);
   }
@@ -234,10 +238,15 @@ class Playlist extends TrackList {
     this.maxDuration = maxDuration;
   }
 
+  genres() {
+    return this.genres;
+  }
+
   hasTrack(aTrack) {
     return this.tracks.includes(aTrack);
   }
-  toString(){
+
+  toString() {
     return `name: ${this.name} size of tracks: ${this.tracks.length} max duration: ${this.maxDuration}`;
   }
 }
