@@ -34,11 +34,141 @@ function help(command) {
   switch(command) {
   case 'addArtist':
     info=`
-addArtist: agrega un nuevo artista.
+addArtist: agrega un artista.
 
-params:
+Argumentos:
 name: nombre del artista
-country: país de procedencia
+country: país de procedencia`;
+    break;
+  case 'addAlbum':
+    info=`
+addAlbum: agrega un album.
+
+Argumentos:
+name: nombre del album
+year: año que fue grabado.
+artist: artista que lo grabó.`;
+    break;
+  case 'addPlayList':
+    info=`
+addPlaylist: agrega una playlist.
+
+Argumentos:
+name: nombre de la playlist
+duration: duración de la playlist.
+genres: géneros de canciones que incluirá.`;
+    break;
+  case 'addTrack':
+    info=`
+addTrack: agrega una canción.
+
+Argumentos:
+name: nombre de la canción
+duration: duración.
+genre: género.
+album: nombre del album en el cual está incluída.`;
+    break;
+  case 'listArtist':
+    info=`listArtist: lista todos los artistas.`;
+    break;
+  case 'listAlbum':
+    info=`listAlbum: lista todos los albumnes.`;
+    break;
+  case 'listPlaylist':
+    info=`listPlaylist: lista todos los playlist.`;
+    break;
+  case 'listTrack':
+    info=`listTrack: lista todas las canciones.`;
+    break;
+  case 'listTrackByAlbum':
+    info=`
+listTrackByAlbum: lista todas las canciones del album indicado.
+
+Argumentos:
+name: nombre del album.
+`;
+    break;
+  case 'listTrackByArtist':
+    info=`
+listTrackByArtist: lista todas las canciones de un artista.
+
+Argumentos:
+name: nombre del artista.
+`;
+    break;
+  case 'listTrackByGenre':
+    info=`
+listTrackByGenre: lista todos las canciones de uno o mas géneros.
+
+Argumentos:
+genres: géneros.
+
+Se debe escribir los géneros entre comillas, y si incluye mas de uno, tienen que estar separados por comas y sin espacios, por ejemplo:
+"pop,rock,otros"
+`;
+    break;
+  case 'searchArtist':
+    info=`
+searchArtist: muestra la información de un artista registrado.
+
+Argumentos:
+name: nombre del artista.
+`;
+    break;
+  case 'searchAlbum':
+    info=`
+searchAlbum: muestra la información de un album.
+
+Argumentos:
+name: nombre del album.
+`;
+    break;
+  case 'searchPlaylist':
+    info=`
+searchPlaylist: muestra la información de una playlist.
+
+Argumentos:
+name: nombre de la playlist.
+`;
+    break;
+  case 'searchTrack':
+    info=`
+searchTrack: muestra la información de una canción.
+
+Argumentos:
+name: nombre de la canción.
+`;
+    break;
+  case 'removeAlbum':
+    info=`
+removeAlbum:
+
+Argumentos:
+name: nombre del album.
+`;
+    break;
+  case 'removeArtist':
+    info=`
+removeArtist: elimina un artista.
+
+Argumentos:
+name: nombre del artista.
+`;
+    break;
+  case 'removePlaylist':
+    info=`
+removePlaylist: borra una playlist
+
+Argumentos:
+name: nombre de la playlist a borrar.
+`;
+    break;
+  case 'removeTrack':
+    info=`
+removeTrack: elimina una canción.
+
+Argumentos:
+name: nombre de la canción.
 `;
     break;
   default:
@@ -48,21 +178,23 @@ Escriba 'help comando' para recibir la ayuda de dicho comando.
 comandos disponibles:
 addArtist
 addAlbum
+addPlayList
 addTrack
 listArtist
 listAlbum
+listPlaylist
 listTrack
 listTrackByAlbum
 listTrackByArtist
 listTrackByGenre
 searchArtist
 searchAlbum
+searchPlaylist
 searchTrack
-removeArtist
 removeAlbum
-removeTrack
+removeArtist
 removePlaylist
-
+removeTrack
 `;
   }
   console.log(info);
