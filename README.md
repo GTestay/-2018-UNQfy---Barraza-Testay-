@@ -42,6 +42,9 @@ node main.js listArtist
 node main.js listAlbum 
 | lista todos los albumnes. 
 
+node main.js listPlaylist
+| lista todos los playlist registrados.
+
 node main.js listTrack 
 | lista todas las canciones registradas.
 
