@@ -14,16 +14,16 @@ node main.js help
 node main.js help <comando>
 | ayuda sobre ese comando.
 
-node main.js addArtist name unNombre country unPais 
+node main.js addArtist name Pepito country Argentina
 | crea un artista y lo agrega a unqfy
 
-node main.js addAlbum name unNombre year unAño artist unArtista 
+node main.js addAlbum name YLosCronoSaurios year 2018 artist Pepito
 | crea un album y lo agrega a su respectivo dueño.
 
-node main.js addPlaylist name unNombre duration unaDuracion genres "generos separados por comas y sin espacios" 
-| crea una playlist con canciones de ese género.
+node main.js addPlaylist name Sauriotron duration 1000 genres "rock,pop"
+| crea una playlist con canciones de ese género; Los generos deben estar separados por comas y sin espacios.
 
-node main.js addTrack name unNombre duration unaDuracion genre genero album unAlbum 
+node main.js addTrack name Crono duration 200 genre pop album YLosCronoSaurios
 | crea una cancion y la agrega al album.
 
 node main.js listArtist 
@@ -35,24 +35,35 @@ node main.js listAlbum
 node main.js listTrack 
 | lista todas las canciones registradas.
 
-node main.js listTrackByArtist  name unNombre
+node main.js listTrackByArtist  name Pepito
 | lista todas las canciones de un artista.
 
-node main.js listTrackByAlbum  name unAlbum
+node main.js listTrackByAlbum  name YLosCronoSaurios
 | lista todas las canciones de un album.
 
-node main.js listTrackByGenre genres "generos separados por coma y sin espacios"
-| lista todas las canciones de un o unos generos.
+node main.js listTrackByGenre genres "rock"
+| lista todas las canciones de un o unos generos. Los generos deben estar separados por comas y sin espacios.
 
-node main.js searchArtist name unNombre 
+node main.js searchArtist name Pepito
 | Búsca y muestra la información de dicho artista.
 
-node main.js searchAlbum name unNombre 
+node main.js searchAlbum name YLosCronoSaurios
 | busca y muestra la información del album con ese nombre.
 
-node main.js searchTrack name unNombre 
+node main.js searchTrack name Crono
 | busca y muestra la información de la cancion con ese nombre.
 
-node main.js searchPlaylist name unNombre 
+node main.js searchPlaylist name Sauriotron
 | información sobre la playlist indicada.
 
+node main.js removeArtist name Pepito
+| elimina al artista y todas sus canciones.
+
+node main.js removeAlbum name YLosCronoSaurios
+| elimina un album especifico y sus canciones.
+
+node main.js removePlaylist name Sauriotron
+| elimina una playlist.
+
+node main.js removeTrack name Crono
+| elimina una cancion.

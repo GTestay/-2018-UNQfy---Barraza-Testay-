@@ -57,7 +57,12 @@ listTrackByArtist
 listTrackByGenre
 searchArtist
 searchAlbum
-SearchTrack
+searchTrack
+removeArtist
+removeAlbum
+removeTrack
+removePlaylist
+
 `;
   }
   console.log(info);
