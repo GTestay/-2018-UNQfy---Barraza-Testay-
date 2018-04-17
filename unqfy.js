@@ -99,17 +99,23 @@ class UNQfy {
     return aplanar(this.albums.map(album => album.tracks));
   }
 
+
   searchArtistByName(name) {
     return this.artists.filter(artist => artist.name.includes(name));
   }
+
   searchAlbumByName(name) {
     return this.albums.filter(album => album.name.includes(name));
   }
 
-  searchTrackByName(name){
+  searchPlaylistByName(name) {
+    return this.playlists.filter(playlist => playlist.name.includes(name));
+  }
+
+  searchTrackByName(name) {
     const tracks = aplanar(this.albums.map(album => album.tracks));
 
-    return tracks.filter(track=> track.name.includes(name));
+    return tracks.filter(track => track.name.includes(name));
   }
 
   getArtistByName(name) {
@@ -129,7 +135,7 @@ class UNQfy {
   }
 
   getPlaylistByName(name) {
-    return this.playlists.find(playlist => playlist.name.includes(name));
+    return this.playlists.find(playlist => playlist.name === name);
   }
 
   addPlaylist(name, genresToInclude, maxDuration) {

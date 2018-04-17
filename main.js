@@ -212,11 +212,15 @@ function runCommand(func, params, args) {
   }
 }
 
+function isNotEmpty(array) {
+  return array.length > 0;
+}
+
 function main() {
   const unqfy = getUNQfy('estado.json');
   const comando = process.argv[2];
   const args = generarDiccionario(process.argv.slice(3));
-  
+
   switch(comando) {
   case 'addAlbum':
     runCommand(a => {
@@ -266,7 +270,7 @@ function main() {
     help(process.argv[3]);
     break;
   case 'listAlbum':
-    if(unqfy.albums.length > 0) {
+    if(isNotEmpty(unqfy.albums)) {
       console.log('Albums:\n');
       unqfy.albums.forEach(a => console.log(`Nombre: ${a.name} Año: ${a.year} Artista: ${a.artist.name}`));
     } else {
@@ -274,7 +278,7 @@ function main() {
     }
     break;
   case 'listArtist':
-    if(unqfy.artists.length > 0) {
+    if(isNotEmpty(unqfy.artists)) {
       console.log('Artists:\n');
       unqfy.artists.forEach(a => console.log(`Nombre: ${a.name}`));
     } else {
@@ -282,16 +286,16 @@ function main() {
     }
     break;
   case 'listPlaylist':
-    if(unqfy.playlists.length > 0) {
+    if( isNotEmpty(unqfy.playlists)) {
       console.log('Playlists:\n');
       unqfy.playlists.forEach(p => console.log(`Nombre: ${p.name}`));
     } else {
-      console.log('no hay playlist registradas.'); 
+      console.log('no hay playlist registradas.');
     }
     break;
   case 'listTrack':
     const tracks = unqfy.listTracks();
-    if(tracks.length > 0) {
+    if( isNotEmpty(tracks)) {
       console.log(`Tracks (${tracks.length}):\n`);
       tracks.forEach(t => console.log(`Nombre: ${t.name} Duracion: ${t.duration} Album: ${t.album.name}`));
     } else {
@@ -306,7 +310,7 @@ function main() {
         album.tracks.forEach(t => console.log(`${t.name}`));
         return '\n';
       } else {
-        return 'Album inexistente.'; 
+        return 'Album inexistente.';
       }
     }, ['name'], args);
     break;
@@ -323,14 +327,14 @@ function main() {
           return `${artist.name} no tiene tracks registrados.`;
         }
       } else {
-        return `error: el artista '${a.name}' no existe.`; 
+        return `error: el artista '${a.name}' no existe.`;
       }
     }, ['name'], args);
     break;
   case 'listTrackByGenre':
     runCommand(a => {
       const tracks = unqfy.getTracksMatchingGenres(a.genres.split(','));
-      if(tracks.length > 0) {
+      if(isNotEmpty(tracks)) {
         console.log('Tracks:\n');
         tracks.forEach(t => console.log(`${t.name}`));
         return '\n';
@@ -385,47 +389,46 @@ function main() {
     break;
   case 'searchAlbum':
     runCommand(a => {
-      const album = unqfy.getAlbumByName(a.name);
-      if(isNotUndefined(album)) {
-        return 'album: '+ album;
+      const albums = unqfy.searchAlbumByName(a.name);
+      if(isNotEmpty(albums)) {
+        albums.forEach(a => console.log(`Nombre: ${a.name}`));
+        return '\n';
       } else {
-        return 'Album inexistente.';
+        return 'No hay Albums para mostrar.';
       }
     }, ['name'], args);
     break;
   case 'searchArtist':
     runCommand(a => {
-      const artist = unqfy.getArtistByName(a.name);
-      if(isNotUndefined(artist)) {
-        return 'Artista: '+ artist;
+      const artists = unqfy.searchArtistByName(a.name);
+      if(isNotEmpty(artists)) {
+        artists.forEach(a => console.log(`Nombre: ${a.name}`));
+        return '\n';
       } else {
-        return 'Artista inexistente.';
+        return 'No hay Artistas para mostrar.';
       }
     }, ['name'], args);
     break;
   case 'searchPlaylist':
     runCommand(a => {
-      const p = unqfy.getPlaylistByName(a.name);
-      if(isNotUndefined(p)) {
-        console.log(`PlayList: '${p.name}'\n`);
-        if(p.tracks.length > 0) {
-          p.tracks.forEach(t => console.log(`${t}`));
-        } else {
-          console.log('no tiene tracks.');
-        }
+      const playlists = unqfy.searchPlaylistByName(a.name);
+      if(isNotEmpty(playlists)) {
+        console.log('PlayList: \n');
+        playlists.forEach(p => console.log(`Nombre: ${p.name} cantidad de canciones: ${p.tracks.length}`));
         return '\n';
       } else {
-        return 'Error: playlist inexistente.';
+        return 'No hay Playlists para mostrar.';
       }
     }, ['name'], args);
     break;
   case 'searchTrack':
     runCommand(a => {
-      const track = unqfy.getTrackByName(a.name);
-      if(isNotUndefined(track)) {
-        return 'Track: ' + track;
+      const tracks = unqfy.searchTrackByName(a.name);
+      if(isNotEmpty(tracks)) {
+        tracks.forEach(t => console.log(`Nombre: ${t.name}`));
+        return '\n';
       } else {
-        return 'track inexistente.';
+        return 'No hay Tracks para mostrar.';
       }
     }, ['name'], args);
     break;
