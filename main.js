@@ -276,7 +276,7 @@ function main() {
   case 'listArtist':
     if(unqfy.artists.length > 0) {
       console.log('Artists:\n');
-      unqfy.artists.forEach(a => console.log(a.toString()));
+      unqfy.artists.forEach(a => console.log(a.name));
     } else {
       console.log('No hay artistas registrados.');
     }
@@ -284,7 +284,7 @@ function main() {
   case 'listPlaylist':
     if(unqfy.playlists.length > 0) {
       console.log('Playlists:\n');
-      unqfy.playlists.forEach(p => console.log(p.toString()));
+      unqfy.playlists.forEach(p => console.log(p.name));
     } else {
       console.log('no hay playlist registradas.'); 
     }
@@ -293,7 +293,7 @@ function main() {
     const tracks = unqfy.listTracks();
     if(tracks.length > 0) {
       console.log(`Tracks (${tracks.length}):\n`);
-      tracks.forEach(t => console.log(t.toString()));
+      tracks.forEach(t => console.log(`${t.name}`));
     } else {
       console.log('No hay tracks registrados.');
     }
@@ -303,7 +303,7 @@ function main() {
       const album = unqfy.getAlbumByName(a.name);
       if(isNotUndefined(album)) {
         console.log('Tracks:\n');
-        album.tracks.forEach(t => console.log(t.toString()));
+        album.tracks.forEach(t => console.log(`${t.name}`));
         return '\n';
       } else {
         return 'Album inexistente.'; 
@@ -317,7 +317,7 @@ function main() {
         const tracks = unqfy.getTracksMatchingArtist(a.name);
         if(tracks.length > 0) {
           console.log('Tracks:\n');
-          tracks.forEach(t => console.log(t.name));
+          tracks.forEach(t => console.log(`${t.name}`));
           return '\n';
         } else {
           return `${artist.name} no tiene tracks registrados.`;
@@ -332,7 +332,7 @@ function main() {
       const tracks = unqfy.getTracksMatchingGenres(a.genres.split(","));
       if(tracks.length > 0) {
         console.log('Tracks:\n');
-        tracks.forEach(t => console.log(t.name));
+        tracks.forEach(t => console.log(`${t.name}`));
         return "\n";
       } else {
         return `no hay tracks del genero: '${a.genre}'.`; 
