@@ -7,6 +7,16 @@ Funcionamiento:
 para utilizar unqfy mediante node ejecutar los siguientes commandos en consola.
 
 node main.js <comando> <parametros con argumentos>
+nota: los argumentos pueden pasarse en diferente orden, ejemplo:
+node main.js addArtist name "Pepito" country "Argentina"
+o:
+node main.js addArtist country "Argentina" name "Pepito"
+
+En Caso que algún argumento faltara será notificado vía consola, ejemplo:
+node main.js addArtist 
+--> se esperaba: name, Country.
+
+---------- comandos disponibles: ----------
 
 node main.js help 
 | muestra los comandos disponibles.
@@ -14,16 +24,16 @@ node main.js help
 node main.js help <comando>
 | ayuda sobre ese comando.
 
-node main.js addArtist name Pepito country Argentina
+node main.js addArtist name "Pepito" country "Argentina"
 | crea un artista y lo agrega a unqfy
 
-node main.js addAlbum name YLosCronoSaurios year 2018 artist Pepito
+node main.js addAlbum name "YLosCronoSaurios" year 2018 artist "Pepito"
 | crea un album y lo agrega a su respectivo dueño.
 
-node main.js addTrack name Crono duration 200 genre pop album YLosCronoSaurios
+node main.js addTrack name "Crono" duration 200 genre "pop" album "YLosCronoSaurios"
 | crea una cancion y la agrega al album.
 
-node main.js addPlaylist name Sauriotron duration 1000 genres "rock,pop"
+node main.js addPlaylist name "Sauriotron" duration 1000 genres "rock,pop"
 | crea una playlist con canciones de ese género; Los generos deben estar separados por comas y sin espacios.
 
 node main.js listArtist 
@@ -35,35 +45,35 @@ node main.js listAlbum
 node main.js listTrack 
 | lista todas las canciones registradas.
 
-node main.js listTrackByArtist  name Pepito
+node main.js listTrackByArtist  name "Pepito"
 | lista todas las canciones de un artista.
 
-node main.js listTrackByAlbum  name YLosCronoSaurios
+node main.js listTrackByAlbum  name "YLosCronoSaurios"
 | lista todas las canciones de un album.
 
 node main.js listTrackByGenre genres "rock"
 | lista todas las canciones de un o unos generos. Los generos deben estar separados por comas y sin espacios.
 
-node main.js searchArtist name Pepito
+node main.js searchArtist name "Pepito"
 | Búsca y muestra la información de dicho artista.
 
-node main.js searchAlbum name YLosCronoSaurios
+node main.js searchAlbum name "YLosCronoSaurios"
 | busca y muestra la información del album con ese nombre.
 
-node main.js searchTrack name Crono
+node main.js searchTrack name "Crono"
 | busca y muestra la información de la cancion con ese nombre.
 
-node main.js searchPlaylist name Sauriotron
+node main.js searchPlaylist name "Sauriotron"
 | información sobre la playlist indicada.
 
-node main.js removeArtist name Pepito
+node main.js removeArtist name "Pepito"
 | elimina al artista y todas sus canciones.
 
-node main.js removeAlbum name YLosCronoSaurios
+node main.js removeAlbum name "YLosCronoSaurios"
 | elimina un album especifico y sus canciones.
 
-node main.js removePlaylist name Sauriotron
+node main.js removePlaylist name "Sauriotron"
 | elimina una playlist.
 
-node main.js removeTrack name Crono
-| elimina una cancion.
+node main.js removeTrack name "Crono"
+| elimina una canción.
