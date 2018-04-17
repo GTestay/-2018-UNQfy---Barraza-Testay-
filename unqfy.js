@@ -20,7 +20,7 @@ class UNQfy {
   }
 
   getTracksMatchingArtist(artistName) {
-    const albumnsWithFilteredTracks = this.albums.filter(album => album.artist === artistName).map(album => album.tracks);
+    const albumnsWithFilteredTracks = this.albums.filter(album => artistName.includes(album.artist.name)).map(album => album.tracks);
 
     return aplanar(albumnsWithFilteredTracks);
   }
@@ -101,11 +101,11 @@ class UNQfy {
 
 
   getArtistByName(name) {
-    return this.artists.find(artist => artist.name === name);
+    return this.artists.find(artist => artist.name.includes(name));
   }
 
   getAlbumByName(name) {
-    return this.albums.find(album => album.name === name);
+    return this.albums.find(album => album.name.includes(name));
   }
 
   getTrackByName(name) {
@@ -117,7 +117,7 @@ class UNQfy {
   }
 
   getPlaylistByName(name) {
-    return this.playlists.find(playlist => playlist.name === name);
+    return this.playlists.find(playlist => playlist.name.includes(name));
   }
 
   addPlaylist(name, genresToInclude, maxDuration) {
@@ -171,7 +171,7 @@ class TrackList {
   }
 
   genres() {
-    return this.tracks.map(track => track.genre).reduce((genre1, genre2) => genre1 === genre2,[]);
+    return this.tracks.map(track => track.genre).reduce((genre1, genre2) => genre1 === genre2, []);
   }
 
   removeTrack(aName) {

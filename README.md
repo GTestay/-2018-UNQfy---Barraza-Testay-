@@ -20,11 +20,11 @@ node main.js addArtist name Pepito country Argentina
 node main.js addAlbum name YLosCronoSaurios year 2018 artist Pepito
 | crea un album y lo agrega a su respectivo dueño.
 
-node main.js addPlaylist name Sauriotron duration 1000 genres "rock,pop"
-| crea una playlist con canciones de ese género; Los generos deben estar separados por comas y sin espacios.
-
 node main.js addTrack name Crono duration 200 genre pop album YLosCronoSaurios
 | crea una cancion y la agrega al album.
+
+node main.js addPlaylist name Sauriotron duration 1000 genres "rock,pop"
+| crea una playlist con canciones de ese género; Los generos deben estar separados por comas y sin espacios.
 
 node main.js listArtist 
 | lista todos los artistas.
