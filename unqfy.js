@@ -99,13 +99,25 @@ class UNQfy {
     return aplanar(this.albums.map(album => album.tracks));
   }
 
+  searchArtistByName(name) {
+    return this.artists.filter(artist => artist.name.includes(name));
+  }
+  searchAlbumByName(name) {
+    return this.albums.filter(album => album.name.includes(name));
+  }
+
+  searchTrackByName(name){
+    const tracks = aplanar(this.albums.map(album => album.tracks));
+
+    return tracks.filter(track=> track.name.includes(name));
+  }
 
   getArtistByName(name) {
-    return this.artists.find(artist => artist.name.includes(name));
+    return this.artists.find(artist => artist.name === name);
   }
 
   getAlbumByName(name) {
-    return this.albums.find(album => album.name.includes(name));
+    return this.albums.find(album => album.name === name);
   }
 
   getTrackByName(name) {
@@ -187,7 +199,7 @@ class TrackList {
   }
 
   getTrack(name) {
-    return this.tracks.find(track => track.name === name);
+    return this.tracks.find(track => track.name.includes(name));
   }
 
   duration() {
@@ -205,7 +217,7 @@ class Album extends TrackList {
   }
 
   hasThisTrack(name) {
-    return this.tracks.some(track => track.name === name);
+    return this.tracks.some(track => track.name === (name));
   }
 
   tracksWithGenres(genres) {
@@ -264,7 +276,7 @@ class Track {
   }
 
   isThisGenre(genre) {
-    return this.genre === genre;
+    return this.genre.includes(genre);
   }
 
   toString() {
