@@ -200,10 +200,6 @@ class Album extends TrackList {
     this.artist = artist;
   }
 
-  addTrack(track) {
-    this.tracks.push(track);
-  }
-
   hasThisTrack(name) {
     return this.tracks.some(track => track.name === name);
   }
