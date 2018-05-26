@@ -1,14 +1,38 @@
+const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} = require('./Excepciones');
 const picklejs = require('picklejs');
+const fs = require('fs');
+let spotify = require('Spotify');
+spotify = new spotify;
 
-function aplanar(array) {
-  return array.reduce((arg1, arg2) => arg1.concat(arg2), []);
-}
+
+const {aplanar} = require('funcionesAuxiliares');
 
 
 class UNQfy {
   constructor() {
     this.artists = [];
     this.playlists = [];
+  }
+  //Dado un nombre de artista, busca sus albumnes en spotify
+  // y los guarda en él.
+  populateAlbumsForArtist(artistName) {
+    let artist;
+    try {
+      artist = this.getArtistByName(artistName);
+
+    } catch (ArtistNotFoundException) {
+      console.log('EL ARTISTA NO EXISTE');
+    }
+
+
+    const id = spotify.getArtistID(artist);
+    const albums = spotify.getAlbumsFromArtist(id);
+
+    this.addAlbumsToArtist(albums, artist);
+  }
+
+  addAlbumsToArtist(albums, artist) {
+    albums.forEach(album => artist.addAlbum(album));
   }
 
   // ADD METHODS
@@ -32,16 +56,20 @@ class UNQfy {
   addAlbum(artistName, params) {
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
     const artist = this.getArtistByName(artistName);
-    const newAlbum = new Album(artist, params.name, params.year);
-    artist.addAlbum(newAlbum);
+    this.addAlbumToArtist(artist, params);
 
   }
 
+  addAlbumToArtist(artist, params) {
+    const newAlbum = new Album(artist, params.name, params.year);
+    artist.addAlbum(newAlbum);
+  }
+
   /* Debe soportar (al menos):
-           params.name (string)
-           params.duration (number)
-           params.genres (lista de strings)
-      */
+             params.name (string)
+             params.duration (number)
+             params.genres (lista de strings)
+        */
   addTrack(albumName, params) {
     /* El objeto track creado debe soportar (al menos) las propiedades:
                  name (string),
@@ -105,8 +133,6 @@ class UNQfy {
   }
 
 
-
-
   listTracks() {
     return aplanar(this.allAlbums().map(album => album.tracks));
   }
@@ -151,7 +177,11 @@ class UNQfy {
 
 
   getArtistByName(name) {
-    return this.artists.find(artist => artist.name === name);
+    let artistSearched = this.artists.find(artist => artist.name === name);
+    if (artistSearched !== undefined)
+      return artistSearched;
+    else
+      throw new ArtistNotFoundException(name);
   }
 
   getAlbumByName(name) {
@@ -188,6 +218,7 @@ class UNQfy {
 
     return aPlaylist;
   }
+
   findAlbumWithTrackName(name) {
     const albums = this.allAlbums();
     return albums.find(album => album.hasThisTrack(name));
