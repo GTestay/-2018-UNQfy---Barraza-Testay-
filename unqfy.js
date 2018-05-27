@@ -1,11 +1,11 @@
 const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} = require('./Excepciones');
 const picklejs = require('picklejs');
 const fs = require('fs');
-let spotify = require('Spotify');
-spotify = new spotify;
+const spotifyModule = require('./Spotify');
+const spotify = new spotifyModule.Spotify();
 
 
-const {aplanar} = require('funcionesAuxiliares');
+const {aplanar} = require('./funcionesAuxiliares');
 
 
 class UNQfy {
@@ -13,6 +13,7 @@ class UNQfy {
     this.artists = [];
     this.playlists = [];
   }
+
   //Dado un nombre de artista, busca sus albumnes en spotify
   // y los guarda en él.
   populateAlbumsForArtist(artistName) {

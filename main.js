@@ -1,7 +1,7 @@
 ﻿/* eslint-disable no-case-declarations */
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy');
-const {isNotUndefined, isNotEmpty, generarDiccionario} = require('funcionesAuxiliares');
+const {isNotUndefined, isNotEmpty, generarDiccionario} = require('./funcionesAuxiliares');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename) {
