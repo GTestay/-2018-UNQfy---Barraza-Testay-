@@ -2,7 +2,6 @@ const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} 
 const picklejs = require('picklejs');
 const fs = require('fs');
 const spotifyModule = require('./Spotify');
-const spotify = new spotifyModule.Spotify();
 
 
 const {aplanar} = require('./funcionesAuxiliares');
@@ -24,12 +23,22 @@ class UNQfy {
     } catch (ArtistNotFoundException) {
       console.log('EL ARTISTA NO EXISTE');
     }
+    const spotify = new spotifyModule.Spotify();
+
+    spotify.getArtistID(artist)
+      .then(id =>{
+        return spotify.getAlbumsFromArtist(id);
+      })
+      .then(albums=>{
+
+        this.addAlbumsToArtist(albums, artist);
+      }
+      )
+      .catch(err=>{
+        console.log(err);
+      });
 
 
-    const id = spotify.getArtistID(artist);
-    const albums = spotify.getAlbumsFromArtist(id);
-
-    this.addAlbumsToArtist(albums, artist);
   }
 
   addAlbumsToArtist(albums, artist) {
@@ -178,7 +187,7 @@ class UNQfy {
 
 
   getArtistByName(name) {
-    let artistSearched = this.artists.find(artist => artist.name === name);
+    const artistSearched = this.artists.find(artist => artist.name === name);
     if (artistSearched !== undefined)
       return artistSearched;
     else
