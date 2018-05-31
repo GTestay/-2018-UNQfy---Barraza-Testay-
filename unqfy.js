@@ -8,7 +8,10 @@ const {aplanar} = require('./funcionesAuxiliares');
 
 
 class UNQfy {
+
   constructor() {
+    this.idAlbum = 0;
+    this.idArtist = 0;
     this.artists = [];
     this.playlists = [];
   }
@@ -26,15 +29,15 @@ class UNQfy {
     const spotify = new spotifyModule.Spotify();
 
     spotify.getArtistFromAPI(artist)
-      .then(artist =>{
+      .then(artist => {
         return spotify.getAlbumsFromArtist(artist.id);
       })
-      .then(albums=>{
+      .then(albums => {
 
-        this.addAlbumsToArtist(albums, artist);
-      }
+          this.addAlbumsToArtist(albums, artist);
+        }
       )
-      .catch(err=>{
+      .catch(err => {
         console.log(err);
       });
 
@@ -53,7 +56,7 @@ class UNQfy {
       */
   addArtist(params) {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
-    const newArtist = new Artist(params.name, params.country);
+    const newArtist = new Artist(params.name, params.country, this.idForArtist());
     this.artists.push(newArtist);
 
   }
@@ -71,7 +74,7 @@ class UNQfy {
   }
 
   addAlbumToArtist(artist, params) {
-    const newAlbum = new Album(artist, params.name, params.year);
+    const newAlbum = new Album(artist, params.name, params.year, this.idForAlbum());
     artist.addAlbum(newAlbum);
   }
 
@@ -251,6 +254,17 @@ class UNQfy {
     return fs.load(filename);
   }
 
+  idForAlbum() {
+    let id = this.idAlbum;
+    this.idAlbum++;
+    return id;
+  }
+
+  idForArtist() {
+    let id = this.idArtist;
+    this.idArtist++;
+    return id;
+  }
 }
 
 class TrackList {
@@ -288,10 +302,11 @@ class TrackList {
 }
 
 class Album extends TrackList {
-  constructor(artist, name, year) {
+  constructor(artist, name, year,id) {
     super(name);
     this.year = year;
     this.artistName = artist.name;
+    this.id = id;
   }
 
   hasThisTrack(name) {
@@ -310,10 +325,12 @@ class Album extends TrackList {
 
 
 class Artist {
-  constructor(name, country) {
+  constructor(name, country,id) {
     this.name = name;
     this.albums = [];
     this.country = country;
+    this.id = id;
+
   }
 
   addAlbum(anAlbum) {
