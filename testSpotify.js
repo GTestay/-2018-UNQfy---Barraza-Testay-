@@ -41,6 +41,17 @@ describe('Spotify API use', () => {
       return responseArtist;
     });
 
-     return expect(promiseArtist.then(artist => artist.name)).to.eventually.equal(json.name);
+    return expect(promiseArtist.then(artist => artist.name)).to.eventually.equal(json.name);
   });
+
+  it('Dado un id de artista deberia retornarte sus albumnes', () => {
+
+
+    let promise = spotify.getAlbumsFromArtist('1QOmebWGB6FdFtW7Bo3F0W');
+
+    return expect(promise.then(albums => albums.length)).to.eventually.equal(20);
+
+  });
+
+
 });
