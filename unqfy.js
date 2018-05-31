@@ -25,9 +25,9 @@ class UNQfy {
     }
     const spotify = new spotifyModule.Spotify();
 
-    spotify.getArtistID(artist)
-      .then(id =>{
-        return spotify.getAlbumsFromArtist(id);
+    spotify.getArtistFromAPI(artist)
+      .then(artist =>{
+        return spotify.getAlbumsFromArtist(artist.id);
       })
       .then(albums=>{
 
