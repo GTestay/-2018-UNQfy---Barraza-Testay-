@@ -8,7 +8,10 @@ const {aplanar} = require('./funcionesAuxiliares');
 
 
 class UNQfy {
+
   constructor() {
+    this.idAlbum = 0;
+    this.idArtist = 0;
     this.artists = [];
     this.playlists = [];
   }
@@ -53,7 +56,7 @@ class UNQfy {
       */
   addArtist(params) {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
-    const newArtist = new Artist(params.name, params.country);
+    const newArtist = new Artist(params.name, params.country, this.idForArtist());
     this.artists.push(newArtist);
 
   }
@@ -71,7 +74,7 @@ class UNQfy {
   }
 
   addAlbumToArtist(artist, params) {
-    const newAlbum = new Album(artist, params.name, params.year);
+    const newAlbum = new Album(artist, params.name, params.year, this.idForAlbum());
     artist.addAlbum(newAlbum);
   }
 
@@ -251,6 +254,17 @@ class UNQfy {
     return fs.load(filename);
   }
 
+  idForAlbum() {
+    let id = this.idAlbum;
+    this.idAlbum++;
+    return id;
+  }
+
+  idForArtist() {
+    let id = this.idArtist;
+    this.idArtist++;
+    return id;
+  }
 }
 
 // TODO: exportar todas las clases que necesiten ser utilizadas desde un modulo cliente
