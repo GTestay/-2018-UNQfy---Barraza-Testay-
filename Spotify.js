@@ -7,15 +7,18 @@ class Spotify {
 
   }
 
-  token(){
-    return'BQCBr4A5mBEaSWfMBW4i7qCmQu61mKfzFPLsitLKtB8T6BzL3uAQ_mVWzWD4JGo1RcKvggl6DoarzivHUDgh5TKSLNR-DTzIYLBUVGVZKeYkLch17Hq49xX2B4TGi_YufCrtklSlkpiXcyod2jVRD1FtzyBf5jt2Tw';
+  token() {
+    let unToken = fs.readFileSync('./spotifyCreds.json').toString();
+    console.log(unToken);
+    return JSON.parse(unToken).access_token;
   }
+
   api() {
     return 'https://api.spotify.com/v1';
   }
 
   //Devuelve una promesa con la id
-  getArtistID(artist) {
+  getArtistFromAPI(artist) {
     const url = `${this.api()}/search?q=${artist.name}&type=artist`;
 
     console.log(url);
@@ -26,11 +29,12 @@ class Spotify {
     };
 
     let artistListJson;
-    const promise= req.get(options)
+    const promise = req.get(options)
       .then((response) => {
 
-        if(response.error){
+        if (response.error) {
           console.log(response.error);
+          return ;
         }
         artistListJson = response.artists.items;
 
@@ -52,20 +56,20 @@ class Spotify {
       json: true
     };
 
-    const albumRetrieve = req.get(options).then(response=>{
-      const albums = [];
+    const albumRetrieve = req.get(options).then(response => {
+        const albums = [];
 
-      response.items.forEach(a => {
-        albums.push( {
-          name: a.name,
-          id: a.id,
-          images: a.images,
-          year: a.release_date
+        response.items.forEach(a => {
+          albums.push({
+            name: a.name,
+            id: a.id,
+            images: a.images,
+            year: a.release_date
+          });
         });
-      });
-      return albums;
+        return albums;
 
-    }
+      }
     );
 
     return albumRetrieve;
