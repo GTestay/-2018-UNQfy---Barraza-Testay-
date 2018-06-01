@@ -2,6 +2,7 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy');
 const {isNotUndefined, isNotEmpty, generarDiccionario} = require('./funcionesAuxiliares');
+const {ArtistNotFoundException,AlbumNotFoundException,TrackNotFoundException} = require('./Excepciones');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename) {
@@ -206,23 +207,23 @@ function main() {
   switch (comando) {
   case 'addAlbum':
     runCommand(a => {
-      const artist = unqfy.getArtistByName(a.artist);
-      if (isNotUndefined(artist)) {
+      if (unqfy.existArtist(a.artist)) {
         unqfy.addAlbum(a.artist, a);
         return `Album '${a.name}' de '${a.artist}', fue insertado correctamente.`;
       } else {
         return 'error: artista inexistente.';
       }
+
     }, ['name', 'year', 'artist'], args);
     break;
   case 'addArtist':
     runCommand(a => {
-      const artist = unqfy.getArtistByName(a.name);
-      if (isNotUndefined(artist)) {
-        return `error: el artista '${a.name}' se encuentra registrado.`;
-      } else {
+      if (!unqfy.existArtist(a.name)) {
         unqfy[comando](a);
         return `el artista '${a.name}', fue insertado correctamente.`;
+      } else {
+        return `error: el artista '${a.name}' se encuentra registrado.`;
+
       }
     }, ['name', 'country'], args);
     break;
@@ -252,9 +253,10 @@ function main() {
     help(process.argv[3]);
     break;
   case 'listAlbum':
-    if (isNotEmpty(unqfy.albums)) {
+    const albums =unqfy.allAlbums();
+    if (isNotEmpty(albums)) {
       console.log('Albums:\n');
-      unqfy.albums.forEach(a => console.log(`Nombre: ${a.name} Año: ${a.year} Artista: ${a.artist.name}`));
+      albums.forEach(a => console.log(`Nombre: ${a.name} Año: ${a.year} Artista: ${a.artistName}`));
     } else {
       console.log('No hay albums registrados.');
     }

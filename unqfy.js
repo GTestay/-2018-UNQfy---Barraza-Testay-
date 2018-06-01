@@ -34,8 +34,8 @@ class UNQfy {
       })
       .then(albums => {
 
-          this.addAlbumsToArtist(albums, artist);
-        }
+        this.addAlbumsToArtist(albums, artist);
+      }
       )
       .catch(err => {
         console.log(err);
@@ -74,7 +74,7 @@ class UNQfy {
   }
 
   addAlbumToArtist(artist, params) {
-    const newAlbum = new Album(artist, params.name, params.year, this.idForAlbum());
+    const newAlbum = new Album(artist.name, params.name, params.year, this.idForAlbum());
     artist.addAlbum(newAlbum);
   }
 
@@ -232,6 +232,17 @@ class UNQfy {
     return aPlaylist;
   }
 
+  existArtist(artistName){
+    try {
+      this.getArtistByName(artistName);
+
+    }  catch (ArtistNotFoundException) {
+      return false;
+    }
+    return true;
+
+  }
+
   findAlbumWithTrackName(name) {
     const albums = this.allAlbums();
     return albums.find(album => album.hasThisTrack(name));
@@ -255,13 +266,13 @@ class UNQfy {
   }
 
   idForAlbum() {
-    let id = this.idAlbum;
+    const id = this.idAlbum;
     this.idAlbum++;
     return id;
   }
 
   idForArtist() {
-    let id = this.idArtist;
+    const id = this.idArtist;
     this.idArtist++;
     return id;
   }
@@ -302,10 +313,10 @@ class TrackList {
 }
 
 class Album extends TrackList {
-  constructor(artist, name, year,id) {
+  constructor(artistName, name, year,id) {
     super(name);
     this.year = year;
-    this.artistName = artist.name;
+    this.artistName = artistName;
     this.id = id;
   }
 
