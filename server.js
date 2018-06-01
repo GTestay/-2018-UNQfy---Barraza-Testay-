@@ -87,6 +87,16 @@ artist = unqfy.searchArtistByName(data.name);
 return JSON.stringify(artist);
 }));
 
+router.route('/artist').delete(run(['id'], function (unqfy, data) {
+  try {
+    artist = unqfy.getArtistById(data.id);
+  } catch (ArtistNotFoundException) {
+    throw new ResourceNotFound()
+  }
+  unqfy.removeArtist(artist.name);
+  return JSON.stringify(artist);
+}));
+
 app.use('/api', router);
 
 app.listen(port);
