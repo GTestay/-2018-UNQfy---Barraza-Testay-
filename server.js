@@ -97,6 +97,13 @@ router.route('/artist').delete(run(['id'], function (unqfy, data) {
   return JSON.stringify(artist);
 }));
 
+router.route('/albums').post(run(['artistId', 'name', 'year'], function (unqfy, data) {
+artist = unqfy.searchArtistById(data.artistId);
+album = unqfy.addAlbum(artist.name, data);
+return JSON.stringify(album);
+}));
+
+
 app.use('/api', router);
 
 app.listen(port);
