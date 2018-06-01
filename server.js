@@ -37,6 +37,10 @@ class ResourceNotFound extends ApiException  {
     super(404, "RESOURCE_NOT_FOUND");
 } }
 
+class BadRequest extends ApiException  {
+  constructor() {
+    super(400, "BAD_REQUEST");
+} }
 
 
 
@@ -64,7 +68,7 @@ function run(params, func) {
         saveUNQfy(unqfy, 'estado.json');
         res.json(r);
       }else{
-        res.json({ status: 400, errorCode: 'BAD_REQUEST'});
+        throwException(res, new BadRequest);
 } };
 }
 
