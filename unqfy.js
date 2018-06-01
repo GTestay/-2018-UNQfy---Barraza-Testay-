@@ -108,12 +108,12 @@ class UNQfy {
   removeArtist(aName) {
     const artistToRemove = this.getArtistByName(aName);
     const tracksToDelete = artistToRemove.albums.map(album => album.tracks);
-
+    
     this.playlists.forEach(playlist => playlist.removeTracks(tracksToDelete));
-
-    this.artists = this.artists.splice(this.artists.indexOf(artistToRemove), 1);
+    
+    this.artists.splice(this.artists.indexOf(artistToRemove), 1);
   }
-
+  
   removePlaylist(aName) {
     this.playlists = this.playlists.filter(playlist => playlist.name !== aName);
   }
