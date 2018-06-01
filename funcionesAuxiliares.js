@@ -24,9 +24,22 @@ function aplanar(array) {
   return array.reduce((arg1, arg2) => arg1.concat(arg2), []);
 }
 
+function print(anObject) {
+  console.log(anObject.toString());
+}
+
+function printArray(anArray) {
+  anArray.forEach(a => {
+    print(a);
+  });
+}
+
+
 module.exports = {
   isNotUndefined,
   generarDiccionario,
   isNotEmpty,
-  aplanar
+  aplanar,
+  print,
+  printArray
 };
