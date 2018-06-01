@@ -154,26 +154,27 @@ class UNQfy {
   searchArtistByName(name) {
     return this.artists.filter(artist => artist.name.includes(name));
   }
-
+  
+  
   searchAlbumByName(name) {
     return this.allAlbums().filter(album => album.name.includes(name));
   }
-
+  
   searchPlaylistByName(name) {
     return this.playlists.filter(playlist => playlist.name.includes(name));
   }
-
+  
   searchTrackByName(name) {
     const tracks = this.listTracks();
-
+    
     return tracks.filter(track => track.name.includes(name));
   }
-
+  
   //GET 'SOMETHING' METHODS
-
+  
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
-
+  
     const tracksFiltered = this.artists.map(artist => artist.tracksWithGenres(genres));
 
     return aplanar(tracksFiltered);
@@ -187,16 +188,19 @@ class UNQfy {
 
     return aplanar(albumnsWithFilteredTracks);
   }
-
-
-  getArtistByName(name) {
-    const artistSearched = this.artists.find(artist => artist.name === name);
+  
+  
+  getArtistBy(filter, valueError) {
+    const artistSearched = this.artists.find(filter);
     if (artistSearched !== undefined)
       return artistSearched;
     else
-      throw new ArtistNotFoundException(name);
+      throw new ArtistNotFoundException(valueError);
   }
-
+  
+  getArtistByName(name) { return getArtistBy(artist => artist.name == name, name); }
+  getArtistById(id) { return getArtistBy(artist => artist.id == id, id); }
+  
   getAlbumByName(name) {
     const albums = this.allAlbums();
 
@@ -332,23 +336,26 @@ class Artist {
     this.id = id;
 
   }
-
+  
   addAlbum(anAlbum) {
     this.albums.push(anAlbum);
   }
-
+  
   tracksFromAlbum(aName) {
     const albumSearched = this.albums.find(a => a.name === aName);
     return albumSearched.tracks;
   }
-
-
+  
   tracksWithGenres(genres) {
     return aplanar(this.albums.map(album => album.tracksWithGenres(genres)));
   }
-
+  
   toString() {
-    return ` name: ${this.name}, country: ${this.country} `;
+    return `name: ${this.name}, country: ${this.country}, id: ${this.id}`;
+  }
+  
+  toJson() {
+    return `{id: ${this.id}, name: ${this.name}, country: ${this.country} `;
   }
 }
 
