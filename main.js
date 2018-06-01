@@ -1,21 +1,17 @@
 ﻿/* eslint-disable no-case-declarations */
-const fs = require('fs'); // necesitado para guardar/cargar unqfy
-const unqmod = require('./unqfy');
+const fs = require('fs');const unqmod = require('./unqfy');
 const {isNotUndefined, isNotEmpty, generarDiccionario} = require('./funcionesAuxiliares');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename) {
   let unqfy = new unqmod.UNQfy();
   if (fs.existsSync(filename)) {
-    console.log();
     unqfy = unqmod.UNQfy.load(filename);
   }
   return unqfy;
 }
 
-// Guarda el estado de UNQfy en filename
 function saveUNQfy(unqfy, filename) {
-  console.log();
   unqfy.save(filename);
 }
 
@@ -217,13 +213,13 @@ function main() {
     break;
   case 'addArtist':
     runCommand(a => {
-      const artist = unqfy.getArtistByName(a.name);
-      if (isNotUndefined(artist)) {
-        return `error: el artista '${a.name}' se encuentra registrado.`;
-      } else {
+      try {
+        const artist = unqfy.getArtistByName(a.name);
+      } catch (ArtistNotFoundException) {
         unqfy[comando](a);
         return `el artista '${a.name}', fue insertado correctamente.`;
       }
+      return `error: el artista '${a.name}' se encuentra registrado.`;
     }, ['name', 'country'], args);
     break;
   case 'addPlaylist':
@@ -262,7 +258,7 @@ function main() {
   case 'listArtist':
     if (isNotEmpty(unqfy.artists)) {
       console.log('Artists:\n');
-      unqfy.artists.forEach(a => console.log(`Nombre: ${a.name}`));
+      unqfy.artists.forEach(a => console.log(a.toString()));
     } else {
       console.log('No hay artistas registrados.');
     }
@@ -385,12 +381,19 @@ function main() {
     runCommand(a => {
       const artists = unqfy.searchArtistByName(a.name);
       if (isNotEmpty(artists)) {
-        artists.forEach(a => console.log(`Nombre: ${a.name}`));
+        artists.forEach(a => console.log(a.toString()));
         return '\n';
       } else {
         return 'No hay Artistas para mostrar.';
       }
     }, ['name'], args);
+    break;
+  case 'searchArtistById':
+    runCommand(a => {
+      const artists = unqfy.getArtistById(a.id);
+      return artists.toString();
+      //return 'Id inexistente.';
+    }, ['id'], args);
     break;
   case 'searchPlaylist':
     runCommand(a => {
