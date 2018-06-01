@@ -60,8 +60,7 @@ class UNQfy {
     this.artists.push(newArtist);
 
   }
-
-
+  
   /* Debe soportar al menos:
           params.name (string)
           params.year (number)
@@ -70,7 +69,7 @@ class UNQfy {
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
     const artist = this.getArtistByName(artistName);
     this.addAlbumToArtist(artist, params);
-
+  
   }
 
   addAlbumToArtist(artist, params) {
@@ -180,7 +179,7 @@ class UNQfy {
     return aplanar(tracksFiltered);
 
   }
-
+  
   getTracksMatchingArtist(artistName) {
 
     const albums = this.allAlbums();
@@ -188,7 +187,6 @@ class UNQfy {
 
     return aplanar(albumnsWithFilteredTracks);
   }
-  
   
   getArtistBy(filter, valueError) {
     const artistSearched = this.artists.find(filter);
@@ -198,8 +196,16 @@ class UNQfy {
       throw new ArtistNotFoundException(valueError);
   }
   
-  getArtistByName(name) { return getArtistBy(artist => artist.name == name, name); }
-  getArtistById(id) { return getArtistBy(artist => artist.id == id, id); }
+  getArtistByName(name) { return this.getArtistBy(a => a.name == name, name); }  
+  getArtistById(id) { return this.getArtistBy(a => a.id == id, id); } 
+  
+  /*getArtistById(id) {
+    const artistSearched = this.artists.find(a => a.id == id);
+    if (artistSearched !== undefined)
+      return artistSearched;
+    else
+      throw new ArtistNotFoundException(id);
+  }*/
   
   getAlbumByName(name) {
     const albums = this.allAlbums();

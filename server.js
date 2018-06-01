@@ -3,6 +3,10 @@ let app = express();
 const fs = require('fs');
 const unqmod = require('./unqfy');
 //const {isNotUndefined} = require('./funcionesAuxiliares');
+function isNotUndefined(value) {
+  return value != undefined;
+}
+
 
 let router = express.Router();
 
@@ -20,6 +24,21 @@ function saveUNQfy(unqfy, filename) {
   unqfy.save(filename);
 }
 
+// excepciones:
+class ApiException extends Error {
+  constructor(status, errorCode) {
+    super();
+    this.status = status
+    this.errorCode = errorCode;
+} }
+
+class ResourceNotFound extends ApiException  {
+  constructor() {
+    super(404, "RESOURCE_NOT_FOUND");
+} }
+
+
+
 
 router.use(function (req, res, next) {
     console.log('Request received!');
@@ -29,31 +48,39 @@ router.get('/', function (req, res) {
     res.json({ message: 'hooray! welcome to our api!' });
 });
 
-function isNotUndefined(value) {
-  return value != undefined;
+function throwException(res, e) {
+  res.status(e.status).send(JSON.stringify(e));
 }
 
-
 function run(params, func) {
-return function (req, res) {
-  if(params.every(p => isNotUndefined(req.query[p]))) {
+  return function (req, res) {
+    if(params.every(p => isNotUndefined(req.query[p]))) {
         let unqfy = getUNQfy('estado.json');
-r=func(unqfy, req.query);
+        try {
+          r=func(unqfy, req.query);
+        } catch (ApiException) {
+          throwException(res, ApiException);
+        }
         saveUNQfy(unqfy, 'estado.json');
         res.json(r);
-    }else{
+      }else{
         res.json({ status: 400, errorCode: 'BAD_REQUEST'});
 } };
 }
 
 router.route('/artist').get(run(['id'], function (unqfy, data) {
-//unqfy.addArtist(data);
-return { message: 'dok' };
+  try {
+    artist = unqfy.getArtistById(data.id);
+  } catch (ArtistNotFoundException) {
+    throw new ResourceNotFound()
+  }
+  return JSON.stringify(artist);
 }));
 
 router.route('/artist').post(run(['name','country'], function (unqfy, data) {
 unqfy.addArtist(data);
-return { message: 'oky' };
+artist = unqfy.searchArtistByName(data.name);
+return JSON.stringify(artist);
 }));
 
 app.use('/api', router);
