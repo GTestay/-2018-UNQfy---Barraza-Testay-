@@ -2,50 +2,109 @@ let express = require('express');
 let app = express();
 const fs = require('fs');
 const unqmod = require('./unqfy');
+//const {isNotUndefined} = require('./funcionesAuxiliares');
+function isNotUndefined(value) {
+  return value != undefined;
+}
+
 
 let router = express.Router();
 
-let port = process.env.PORT || 8080;        // set our port
+let port = process.env.PORT || 8080;
 
-// Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename) {
   let unqfy = new unqmod.UNQfy();
   if (fs.existsSync(filename)) {
-    console.log();
     unqfy = unqmod.UNQfy.load(filename);
   }
   return unqfy;
 }
 
-// Guarda el estado de UNQfy en filename
 function saveUNQfy(unqfy, filename) {
-  console.log();
   unqfy.save(filename);
 }
+
+// excepciones:
+class ApiException extends Error {
+  constructor(status, errorCode) {
+    super();
+    this.status = status
+    this.errorCode = errorCode;
+} }
+
+class ResourceNotFound extends ApiException  {
+  constructor() {
+    super(404, "RESOURCE_NOT_FOUND");
+} }
+
+class BadRequest extends ApiException  {
+  constructor() {
+    super(400, "BAD_REQUEST");
+} }
+
 
 
 router.use(function (req, res, next) {
     console.log('Request received!');
-    next(); // make sure we go to the next routes and don't stop here
-});
+    next();});
 
 router.get('/', function (req, res) {
     res.json({ message: 'hooray! welcome to our api!' });
 });
 
-app.use('/api', router);
-router.route('/artist').get(function (req, res) {
-    if (req.query.name && req.query.country){
-        let unqfy = getUNQfy('estado.json');
-unqfy.addArtist(req.query);
-        saveUNQfy(unqfy, 'estado.json');
-        res.json({ message: 'okey' });
-    }else{
-        res.json({ message: 'Se esperaba: name, country ' });
+function throwException(res, e) {
+  res.status(e.status).send(JSON.stringify(e));
 }
-});
+
+function run(params, func) {
+  return function (req, res) {
+    if(params.every(p => isNotUndefined(req.query[p]))) {
+        let unqfy = getUNQfy('estado.json');
+        try {
+          r=func(unqfy, req.query);
+        } catch (ApiException) {
+          throwException(res, ApiException);
+        }
+        saveUNQfy(unqfy, 'estado.json');
+        res.json(r);
+      }else{
+        throwException(res, new BadRequest);
+} };
+}
+
+router.route('/artist').get(run(['id'], function (unqfy, data) {
+  try {
+    artist = unqfy.getArtistById(data.id);
+  } catch (ArtistNotFoundException) {
+    throw new ResourceNotFound()
+  }
+  return JSON.stringify(artist);
+}));
+
+router.route('/artist').post(run(['name','country'], function (unqfy, data) {
+unqfy.addArtist(data);
+artist = unqfy.searchArtistByName(data.name);
+return JSON.stringify(artist);
+}));
+
+router.route('/artist').delete(run(['id'], function (unqfy, data) {
+  try {
+    artist = unqfy.getArtistById(data.id);
+  } catch (ArtistNotFoundException) {
+    throw new ResourceNotFound()
+  }
+  unqfy.removeArtist(artist.name);
+  return JSON.stringify(artist);
+}));
+
+router.route('/albums').post(run(['artistId', 'name', 'year'], function (unqfy, data) {
+artist = unqfy.searchArtistById(data.artistId);
+album = unqfy.addAlbum(artist.name, data);
+return JSON.stringify(album);
+}));
 
 
+app.use('/api', router);
 
 app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log('Server started at the port: ' + port);

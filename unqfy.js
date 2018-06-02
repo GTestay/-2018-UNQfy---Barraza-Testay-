@@ -61,7 +61,6 @@ class UNQfy {
 
   }
 
-
   /* Debe soportar al menos:
           params.name (string)
           params.year (number)
@@ -112,7 +111,7 @@ class UNQfy {
 
     this.playlists.forEach(playlist => playlist.removeTracks(tracksToDelete));
 
-    this.artists = this.artists.splice(this.artists.indexOf(artistToRemove), 1);
+    this.artists.splice(this.artists.indexOf(artistToRemove), 1);
   }
 
   removePlaylist(aName) {
@@ -155,6 +154,7 @@ class UNQfy {
     return this.artists.filter(artist => artist.name.includes(name));
   }
 
+
   searchAlbumByName(name) {
     return this.allAlbums().filter(album => album.name.includes(name));
   }
@@ -188,14 +188,24 @@ class UNQfy {
     return aplanar(albumnsWithFilteredTracks);
   }
 
-
-  getArtistByName(name) {
-    const artistSearched = this.artists.find(artist => artist.name === name);
+  getArtistBy(filter, valueError) {
+    const artistSearched = this.artists.find(filter);
     if (artistSearched !== undefined)
       return artistSearched;
     else
-      throw new ArtistNotFoundException(name);
+      throw new ArtistNotFoundException(valueError);
   }
+
+  getArtistByName(name) { return this.getArtistBy(a => a.name == name, name); }
+  getArtistById(id) { return this.getArtistBy(a => a.id == id, id); }
+
+  /*getArtistById(id) {
+    const artistSearched = this.artists.find(a => a.id == id);
+    if (artistSearched !== undefined)
+      return artistSearched;
+    else
+      throw new ArtistNotFoundException(id);
+  }*/
 
   getAlbumByName(name) {
     const albums = this.allAlbums();

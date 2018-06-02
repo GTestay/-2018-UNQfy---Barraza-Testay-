@@ -1,6 +1,5 @@
 ﻿/* eslint-disable no-case-declarations */
-const fs = require('fs'); // necesitado para guardar/cargar unqfy
-const unqmod = require('./unqfy');
+const fs = require('fs');const unqmod = require('./unqfy');
 const {isNotUndefined, isNotEmpty, generarDiccionario, print, printArray} = require('./funcionesAuxiliares');
 const {ArtistNotFoundException,AlbumNotFoundException,TrackNotFoundException} = require('./Excepciones');
 
@@ -8,15 +7,12 @@ const {ArtistNotFoundException,AlbumNotFoundException,TrackNotFoundException} = 
 function getUNQfy(filename) {
   let unqfy = new unqmod.UNQfy();
   if (fs.existsSync(filename)) {
-    console.log();
     unqfy = unqmod.UNQfy.load(filename);
   }
   return unqfy;
 }
 
-// Guarda el estado de UNQfy en filename
 function saveUNQfy(unqfy, filename) {
-  console.log();
   unqfy.save(filename);
 }
 
@@ -393,12 +389,19 @@ function main() {
     runCommand(a => {
       const artists = unqfy.searchArtistByName(a.name);
       if (isNotEmpty(artists)) {
-        artists.forEach(a => console.log(`Nombre: ${a.name}`));
+        artists.forEach(a => console.log(a.toString()));
         return '\n';
       } else {
         return 'No hay Artistas para mostrar.';
       }
     }, ['name'], args);
+    break;
+  case 'searchArtistById':
+    runCommand(a => {
+      const artists = unqfy.getArtistById(a.id);
+      return artists.toString();
+      //return 'Id inexistente.';
+    }, ['id'], args);
     break;
   case 'searchPlaylist':
     runCommand(a => {
