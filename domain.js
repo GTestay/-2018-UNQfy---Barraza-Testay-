@@ -1,3 +1,5 @@
+const {aplanar} = require('./funcionesAuxiliares');
+
 class TrackList {
   constructor(name) {
     this.name = name;
@@ -33,7 +35,7 @@ class TrackList {
 }
 
 class Album extends TrackList {
-  constructor(artistName, name, year,id) {
+  constructor(artistName, name, year, id) {
     super(name);
     this.year = year;
     this.artistName = artistName;
@@ -48,6 +50,9 @@ class Album extends TrackList {
     return this.tracks.filter(track => track.withThisGenres(genres));
   }
 
+  toJSON() {
+    return `{id: ${this.id}, name: ${this.name},  artistName: ${this.artistName}, year: ${this.year} `;
+  }
 
   toString() {
     return ` name: ${this.name}, year: ${this.year}, artist: ${this.artistName} `;
@@ -77,7 +82,11 @@ class Artist {
   }
 
   toString() {
-    return ` name: ${this.name}, country: ${this.country} `;
+    return `name: ${this.name}, country: ${this.country}, id: ${this.id}`;
+  }
+
+  toJson() {
+    return `{id: ${this.id}, name: ${this.name}, country: ${this.country} `;
   }
 }
 
@@ -108,6 +117,11 @@ class Track {
     this.duration = duration;
     this.genre = genre;
     this.album = album;
+    this.lyrics = null;
+  }
+
+  hasLyrics() {
+    return this.lyrics !== null;
   }
 
   withThisGenres(genres) {
@@ -125,7 +139,6 @@ class Track {
 }
 
 module.exports = {
-  TrackList,
   Album,
   Artist,
   Playlist,

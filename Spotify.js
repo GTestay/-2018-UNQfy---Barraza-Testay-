@@ -15,7 +15,7 @@ class Spotify {
       unToken = JSON.parse(unToken).access_token;
       return unToken;
     } else {
-      return new Error('ARCHIVO INEXISTENTE');
+      throw new Error('ARCHIVO INEXISTENTE');
     }
   }
 
