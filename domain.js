@@ -33,10 +33,11 @@ class TrackList {
 }
 
 class Album extends TrackList {
-  constructor(artist, name, year) {
+  constructor(artistName, name, year,id) {
     super(name);
     this.year = year;
-    this.artistName = artist.name;
+    this.artistName = artistName;
+    this.id = id;
   }
 
   hasThisTrack(name) {

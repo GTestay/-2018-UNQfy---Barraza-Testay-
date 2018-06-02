@@ -254,7 +254,7 @@ function main() {
     break;
   case 'listAlbum':
     const albums =unqfy.allAlbums();if (isNotEmpty(albums)) {
-      console.log('Albums:\n');
+      print('Albums:\n');
       albums.forEach(a => console.log(`Nombre: ${a.name} Año: ${a.year} Artista: ${a.artistName}`));
     } else {
       console.log('No hay albums registrados.');
@@ -262,7 +262,7 @@ function main() {
     break;
   case 'listArtist':
     if (isNotEmpty(unqfy.artists)) {
-      console.log('Artists:\n');
+      print('Artists:\n');
       unqfy.artists.forEach(a => console.log(`Nombre: ${a.name}`));
     } else {
       console.log('No hay artistas registrados.');
@@ -270,7 +270,7 @@ function main() {
     break;
   case 'listPlaylist':
     if (isNotEmpty(unqfy.playlists)) {
-      console.log('Playlists:\n');
+      print('Playlists:\n');
       unqfy.playlists.forEach(p => console.log(`Nombre: ${p.name}`));
     } else {
       console.log('no hay playlist registradas.');
@@ -279,7 +279,7 @@ function main() {
   case 'listTrack':
     const tracks = unqfy.listTracks();
     if (isNotEmpty(tracks)) {
-      console.log(`Tracks (${tracks.length}):\n`);
+      print(`Tracks (${tracks.length}):\n`);
       tracks.forEach(t => console.log(`Nombre: ${t.name} Duracion: ${t.duration} Album: ${t.album.name}`));
     } else {
       console.log('No hay tracks registrados.');
@@ -289,7 +289,7 @@ function main() {
     runCommand(a => {
       const album = unqfy.getAlbumByName(a.name);
       if (isNotUndefined(album)) {
-        console.log('Tracks:\n');
+        print('Tracks:\n');
         album.tracks.forEach(t => console.log(`${t.name}`));
         return '\n';
       } else {
@@ -304,7 +304,7 @@ function main() {
       if (isNotUndefined(artist)) {
         const tracks = unqfy.getTracksMatchingArtist(a.name);
         if (isNotEmpty(tracks)) {
-          console.log('Tracks:\n');
+          print('Tracks:\n');
           tracks.forEach(t => console.log(`Nombre: ${t.name}`));
           return '\n';
         } else {
@@ -319,7 +319,7 @@ function main() {
     runCommand(a => {
       const tracks = unqfy.getTracksMatchingGenres(a.genres.split(','));
       if (isNotEmpty(tracks)) {
-        console.log('Tracks:\n');
+        print('Tracks:\n');
         tracks.forEach(t => console.log(`${t.name}`));
         return '\n';
       } else {
