@@ -68,6 +68,7 @@ function run(params, func) {
 } };
 }
 
+// get/api/artist/:id
 router.route('/artist/:id').get(run([], function (unqfy, req) {
   try {
     artist = unqfy.getArtistById(req.params.id);
@@ -77,6 +78,7 @@ router.route('/artist/:id').get(run([], function (unqfy, req) {
   return JSON.stringify(artist);
 }));
 
+// post/api/artist body=(name, country)
 router.route('/artist').post(run(['name','country'], function (unqfy, data) {
 artist = unqfy.addArtist(data);
 return JSON.stringify(artist);
@@ -91,6 +93,17 @@ router.route('/artist').delete(run(['id'], function (unqfy, data) {
   unqfy.removeArtist(artist.name);
   return JSON.stringify(artist);
 }));
+
+// get/api/albums/:id
+router.route('/albums/:id').get(run([], function (unqfy, req) {
+  try {
+    album = unqfy.getAlbumById(req.params.id);
+  } catch (AlbumNotFoundException) {
+    throw new ResourceNotFound()
+  }
+  return JSON.stringify(album);
+}));
+
 
 app.use('/api', router);
 

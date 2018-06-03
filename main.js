@@ -248,9 +248,9 @@ function main() {
     help(process.argv[3]);
     break;
   case 'listAlbum':
-    if (isNotEmpty(unqfy.albums)) {
+    if (isNotEmpty(unqfy.allAlbums())) {
       console.log('Albums:\n');
-      unqfy.albums.forEach(a => console.log(`Nombre: ${a.name} Año: ${a.year} Artista: ${a.artist.name}`));
+      unqfy.allAlbums().forEach(a => console.log(`Nombre: ${a.name} Año: ${a.year} Artista: ${a.artistName}`));
     } else {
       console.log('No hay albums registrados.');
     }
