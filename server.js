@@ -57,11 +57,11 @@ router.route('/artists/:id').get(run([], (unqfy, req) => {
   return artist;
 }));
 
-// get /api/artists/?name=x
+// get /api/artists?name=x
 router.route('/artists').get(run([], (unqfy, req) => {
 
   if (isNotUndefined(req.query.name)) {
-    return unqfy.getArtistsByName(req.query.name);
+    return unqfy.searchArtistByName(req.query.name);
   } else {
     return unqfy.artists;
   }

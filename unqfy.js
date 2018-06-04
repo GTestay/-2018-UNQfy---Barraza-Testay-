@@ -64,7 +64,9 @@ class UNQfy {
 
 
   addAlbumsToArtist(albums, artist) {
-    albums.forEach(album => artist.addAlbum(album));
+
+
+    albums.forEach(album => this.addAlbumToArtist(artist,album));
   }
 
   // ADD METHODS
@@ -170,12 +172,12 @@ class UNQfy {
 
   //SEARCH METHODS
   searchArtistByName(name) {
-    return this.artists.filter(artist => artist.name.includes(name));
+    return this.artists.filter(artist => artist.hasThisName(name));
   }
 
 
   searchAlbumByName(name) {
-    return this.allAlbums().filter(album => album.name.includes(name));
+    return this.allAlbums().filter(album => album.hasThisName(name));
   }
 
   searchPlaylistByName(name) {

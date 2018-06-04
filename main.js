@@ -344,7 +344,8 @@ function main() {
   case 'populateAlbumsForArtist':
     runCommand(a => {
       unqfy.populateAlbumsForArtist(a.name).then(promise => {
-        printArray(unqfy.getArtistByName(a.name));
+
+        printArray(unqfy.getArtistByName(a.name).albums);
         unqfy.save('estado.json');
       });
     }, ['name'], args);

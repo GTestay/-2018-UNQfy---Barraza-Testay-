@@ -31,7 +31,7 @@ function aplanar(array) {
 }
 
 function print(anObject) {
-  console.log(anObject.toString());
+  console.log(anObject);
 }
 
 function printArray(anArray) {
