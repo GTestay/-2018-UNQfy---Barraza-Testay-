@@ -68,11 +68,7 @@ router.route('/artists/:id').get(run([], (unqfy, req) => {
 router.route('/artists').get(run([], (unqfy, req) => {
 
   if (isNotUndefined(req.query.name)) {
-    try {
-      return unqfy.getArtistByName(req.query.name);
-    } catch (ArtistNotFoundException) {
-      throw new ResourceNotFound();
-    }
+    return unqfy.getArtistsByName(req.query.name);
   } else {
     return unqfy.artists;
   }
@@ -82,10 +78,15 @@ router.route('/artists').get(run([], (unqfy, req) => {
 // post/api/artist body=(name, country)
 router.route('/artists').post(run(['name', 'country'], (unqfy, req) => {
 
-  return unqfy.addArtist(req.params);
+  if (unqfy.existArtist(req.body.name)) {
+    throw new ResourceAlreadyExistError();
+  } else {
+    return unqfy.addArtist(req.body);
+  }
+
 }));
 
-router.route('/artists').delete(run(['id'], (unqfy, req) => {
+router.route('/artists/:id').delete(run([], (unqfy, req) => {
 
   let artist;
   try {
