@@ -261,7 +261,6 @@ function main() {
         return unqfy.getLyricsFor(track);
       }
 
-
     },['name'],args);
     break;
   case 'help':
@@ -346,6 +345,7 @@ function main() {
     runCommand(a => {
       unqfy.populateAlbumsForArtist(a.name).then(promise => {
         printArray(unqfy.getArtistByName(a.name));
+        unqfy.save('estado.json');
       });
     }, ['name'], args);
     break;
