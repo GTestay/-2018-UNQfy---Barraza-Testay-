@@ -56,6 +56,14 @@ class ResourceNotFound extends APIError {
   }
 }
 
+
+class RelatedResourceNotFound extends APIError {
+  constructor() {
+    super('RelatedResourceNotFound', 404, 'RELATED_RESOURCE_NOT_FOUND');
+  }
+}
+
+
 class ResourceAlreadyExistError extends APIError {
   constructor() {
     super('ResourceAlreadyExistError', 409, 'RESOURCE_ALREADY_EXISTS');
@@ -70,5 +78,5 @@ class Failure extends APIError {
 
 module.exports = {
   ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException,
-  Failure, ResourceAlreadyExistError, ResourceNotFound, BadRequest
+  Failure, ResourceAlreadyExistError, ResourceNotFound, BadRequest, RelatedResourceNotFound
 };
