@@ -37,7 +37,7 @@ function throwException(res, e) {
 
 function run(params, func) {
   return function (req, res) {
-    if (params.every(p => isNotUndefined(req.query[p])) || isNotUndefined(req.params)) {
+    if (params.every(p => isNotUndefined(req.query[p])) || isNotUndefined(req.body)) {
       const unqfy = getUNQfy('estado.json');
       let respuesta;
       try {
@@ -110,8 +110,7 @@ router.route('/albums/:id').get(run([], (unqfy, req) => {
 }));
 
 app.use(bodyParser.json());
-
 app.use('/api', router);
-
 app.listen(port);
+
 console.log('Server started at the port: ' + port);
