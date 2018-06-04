@@ -1,4 +1,4 @@
-const {aplanar} = require('./funcionesAuxiliares');
+const {aplanar, compareStrings} = require('./funcionesAuxiliares');
 
 class TrackList {
   constructor(name) {
@@ -32,6 +32,10 @@ class TrackList {
       .reduce((duration1, duration2) => duration1 + duration2, 0);
   }
 
+  hasThisName(aName) {
+    return compareStrings(this.name, aName);
+  }
+
 }
 
 class Album extends TrackList {
@@ -57,7 +61,7 @@ class Album extends TrackList {
 
 
 class Artist {
-  constructor(name, country,id) {
+  constructor(name, country, id) {
     this.name = name;
     this.albums = [];
     this.country = country;
@@ -76,6 +80,10 @@ class Artist {
 
   tracksWithGenres(genres) {
     return aplanar(this.albums.map(album => album.tracksWithGenres(genres)));
+  }
+
+  hasThisName(aName) {
+    return compareStrings(this.name, aName);
   }
 
   toString() {

@@ -10,6 +10,11 @@ function generarDiccionario(array) {
   return dic;
 }
 
+function compareStrings(str1, str2) {
+  //chequea por identidad y luego por inclusion.
+  return str1 === str2 || str1.toLocaleLowerCase().includes(str2.toLocaleLowerCase());
+}
+
 function isNotUndefined(value) {
   return value != undefined;
 }
@@ -35,11 +40,10 @@ function printArray(anArray) {
 }
 
 
-
-
 module.exports = {
   isNotUndefined,
   generarDiccionario,
+  compareStrings,
   isNotEmpty,
   aplanar,
   print,
