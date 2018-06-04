@@ -37,7 +37,7 @@ function throwException(res, e) {
 
 function run(params, func) {
   return function (req, res) {
-    if (params.every(p => isNotUndefined(req.query[p]))) {
+    if (params.every(p => isNotUndefined(req.query[p])) || isNotUndefined(req.params)) {
       const unqfy = getUNQfy('estado.json');
       let respuesta;
       try {
