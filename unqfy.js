@@ -58,7 +58,7 @@ class UNQfy {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
     const newArtist = new Artist(params.name, params.country, this.idForArtist());
     this.artists.push(newArtist);
-
+    return newArtist;
   }
 
   /* Debe soportar al menos:
@@ -68,13 +68,13 @@ class UNQfy {
   addAlbum(artistName, params) {
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
     const artist = this.getArtistByName(artistName);
-    this.addAlbumToArtist(artist, params);
-
+    return this.addAlbumToArtist(artist, params);
   }
 
   addAlbumToArtist(artist, params) {
     const newAlbum = new Album(artist.name, params.name, params.year, this.idForAlbum());
     artist.addAlbum(newAlbum);
+    return newAlbum;
   }
 
   /* Debe soportar (al menos):

@@ -4,12 +4,7 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound} = require('./Excepciones');
 const unqmod = require('./unqfy');
-
-//const {isNotUndefined} = require('./funcionesAuxiliares');
-function isNotUndefined(value) {
-  return value != undefined;
-}
-
+const {isNotUndefined} = require('./funcionesAuxiliares');
 
 const router = express.Router();
 
@@ -41,38 +36,32 @@ function throwException(res, e) {
 }
 
 function run(params, func) {
-
-    return (req, res) => {
-        if (params.every(p => isNotUndefined(req.query[p]))) {
-
-            const unqfy = getUNQfy('estado.json');
-            let r;
-            try {
-                r = func(unqfy, req.query);
-            } catch (ApiException) {
-                throwException(res, ApiException);
-            }
-            saveUNQfy(unqfy, 'estado.json');
-            res.json(r);
-        } else {
-            throwException(res, new BadRequest);
+  return function (req, res) {
+    if(params.every(p => isNotUndefined(req.query[p]))) {
+        let unqfy = getUNQfy('estado.json');
+        try {
+          r=func(unqfy, req);
+        } catch (ApiException) {
+          throwException(res, ApiException);
         }
-    };
+        saveUNQfy(unqfy, 'estado.json');
+        res.json(r);
+      }else{
+        throwException(res, new BadRequest);
+} };
 }
 
-router.route('/artist').get(run(['id'], (unqfy, data) => {
-    let artist;
-    try {
-        artist = unqfy.getArtistById(data.id);
-    } catch (ArtistNotFoundException) {
-        throw new ResourceNotFound();
-    }
-    return JSON.stringify(artist);
+router.route('/artist/:id').get(run([], function (unqfy, req) {
+  try {
+    artist = unqfy.getArtistById(req.params.id);
+  } catch (ArtistNotFoundException) {
+    throw new ResourceNotFound()
+  }
+  return JSON.stringify(artist);
 }));
 
 router.route('/artist').post(run(['name','country'], function (unqfy, data) {
-unqfy.addArtist(data);
-artist = unqfy.searchArtistByName(data.name);
+artist = unqfy.addArtist(data);
 return JSON.stringify(artist);
 }));
 
@@ -87,14 +76,6 @@ router.route('/artist').delete(run(['id'], (unqfy, data) => {
     unqfy.removeArtist(artist.name);
     return JSON.stringify(artist);
 }));
-
-router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, data) => {
-    const artist = unqfy.searchArtistById(data.artistId);
-    const album = unqfy.addAlbum(artist.name, data);
-    return JSON.stringify(album);
-}));
-
-// app.use(bodyParser.json());
 
 app.use('/api', router);
 
