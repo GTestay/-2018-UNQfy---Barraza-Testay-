@@ -54,7 +54,7 @@ function run(params, func) {
 }
 
 // get/api/artist/:id
-router.route('/artist/:id').get(run([], function (unqfy, req) {
+router.route('/artists/:id').get(run([], function (unqfy, req) {
   try {
     artist = unqfy.getArtistById(req.params.id);
   } catch (ArtistNotFoundException) {
@@ -64,7 +64,7 @@ router.route('/artist/:id').get(run([], function (unqfy, req) {
 }));
 
 // post/api/artist body=(name, country)
-router.route('/artist').post(run(['name','country'], function (unqfy, data) {
+router.route('/artists').post(run(['name','country'], function (unqfy, data) {
 artist = unqfy.addArtist(data);
 return JSON.stringify(artist);
 }));
