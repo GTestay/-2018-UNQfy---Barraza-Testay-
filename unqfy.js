@@ -4,7 +4,7 @@ const fs = require('fs');
 const spotifyModule = require('./Spotify');
 const {Artist, Album, Track, TrackList, Playlist} = require('./domain');
 
-const {aplanar} = require('./funcionesAuxiliares');
+const {aplanar,isNotUndefined,isNotEmpty} = require('./funcionesAuxiliares');
 
 
 class UNQfy {
@@ -190,18 +190,26 @@ class UNQfy {
 
   getArtistBy(filter, valueError) {
     const artistSearched = this.artists.find(filter);
-    if (artistSearched !== undefined)
+    if( isNotUndefined(artistSearched ))
       return artistSearched;
     else
       throw new ArtistNotFoundException(valueError);
   }
-  
-  getArtistByName(name) { return this.getArtistBy(a => a.name == name, name); }  
-  getArtistById(id) { return this.getArtistBy(a => a.id == id, id); } 
-  
+
+  getArtistByName(name) { return this.getArtistBy(a => a.hasThisName(name), name); }
+  getArtistById(id) { return this.getArtistBy(a => a.id == id, id); }
+
+  getArtistsByName(name){
+    return this.artists.filter(a => !a.hasThisName(name));
+  }
+
+  getAlbumsByName(name){
+    return this.allAlbums().filter(a => !a.hasThisName(name));
+  }
+
   getAlbumBy(filter, valueError) {
     const album = this.allAlbums().find(filter);
-    if(album !== undefined)
+    if(isNotUndefined(album))
       return album;
     else
       throw new AlbumNotFoundException(valueError);
