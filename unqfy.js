@@ -121,7 +121,7 @@ class UNQfy {
   removeAlbum(aName) {
     const allTracksFromAlbum = aplanar(this.artists.map(a => a.tracksFromAlbum(aName)));
 
-    this.artists = this.artists.forEach(a => a.removeAlbum(aName));
+    this.artists.forEach(a => a.removeAlbum(aName));
 
     this.removeTracksFromPlaylist(allTracksFromAlbum);
 

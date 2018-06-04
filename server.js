@@ -86,6 +86,7 @@ router.route('/artists').post(run(['name', 'country'], (unqfy, req) => {
 
 }));
 
+// delete /artists/:id
 router.route('/artists/:id').delete(run([], (unqfy, req) => {
 
   let artist;
@@ -99,7 +100,7 @@ router.route('/artists/:id').delete(run([], (unqfy, req) => {
 }));
 
 
-// get/api/albums/:id
+// get /api/albums/:id
 router.route('/albums/:id').get(run([], (unqfy, req) => {
   let album;
   try {
@@ -110,36 +111,43 @@ router.route('/albums/:id').get(run([], (unqfy, req) => {
   return album;
 }));
 
-// get /api/artists?name=x
+// get /api/albums?name=x
 router.route('/albums').get(run([], (unqfy, req) => {
 
   if (isNotUndefined(req.query.name)) {
-    return unqfy.getAlbumsByName(req.query.name);
+    return unqfy.getAlbumByName(req.query.name);
   } else {
     return unqfy.allAlbums();
   }
 }));
 
-// get/api/albums?name=x
+// post /api/albums
 router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, req) => {
 
-  if (isNotUndefined(req.query.name)) {
-    return unqfy.getAlbumsByName(req.query.name);
+  const artist = unqfy.getArtistById(req.body.artistId);
+  if (isNotUndefined(artist)) {
+
+    let album = unqfy.addAlbumToArtist(artist, req.body);
+
+    return album;
   } else {
-    return unqfy.allAlbums();
+    throw new ResourceNotFound();
   }
+
+
 }));
 
+// delete /albums/:id
 
 router.route('/albums/:id').delete(run([], (unqfy, req) => {
 
-  let artist;
+  let album;
   try {
-    artist = unqfy.getArtistById(req.params.id);
-  } catch (ArtistNotFoundException) {
+    album = unqfy.getAlbumById(req.params.id);
+  } catch (AlbumNotFoundException) {
     throw new ResourceNotFound();
   }
-  unqfy.removeArtist(artist.name);
+  unqfy.removeAlbum(album.name);
 
 }));
 
