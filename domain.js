@@ -99,6 +99,10 @@ class Artist {
     return compareStrings(this.name, aName);
   }
 
+  hasThisAlbum(aName) {
+    return this.albums.includes(a => a.hasThisName(aName));
+  }
+
   toString() {
     return `name: ${this.name}, country: ${this.country}, id: ${this.id}`;
   }

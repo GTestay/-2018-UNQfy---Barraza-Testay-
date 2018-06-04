@@ -115,7 +115,7 @@ router.route('/albums/:id').get(run([], (unqfy, req) => {
 router.route('/albums').get(run([], (unqfy, req) => {
 
   if (isNotUndefined(req.query.name)) {
-    return unqfy.getAlbumByName(req.query.name);
+    return unqfy.getAlbumsByName(req.query.name);
   } else {
     return unqfy.allAlbums();
   }
@@ -125,11 +125,9 @@ router.route('/albums').get(run([], (unqfy, req) => {
 router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, req) => {
 
   const artist = unqfy.getArtistById(req.body.artistId);
-  if (isNotUndefined(artist)) {
+  if (isNotUndefined(artist) && !artist.hasThisAlbum(req.body.name)) {
 
-    let album = unqfy.addAlbumToArtist(artist, req.body);
-
-    return album;
+    return unqfy.addAlbumToArtist(artist, req.body);
   } else {
     throw new ResourceNotFound();
   }
