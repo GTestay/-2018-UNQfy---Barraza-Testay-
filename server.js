@@ -22,14 +22,7 @@ function saveUNQfy(unqfy, filename) {
   unqfy.save(filename);
 }
 
-router.use((req, res, next) => {
-  console.log('Request received!');
-  next();
-});
 
-router.get('/', (req, res) => {
-  res.json({message: 'hooray! welcome to our api!'});
-});
 
 function throwException(res, e) {
   res.status(e.status).send(e);
@@ -64,7 +57,7 @@ router.route('/artists/:id').get(run([], (unqfy, req) => {
   return artist;
 }));
 
-// get /api/artists?name=x
+// get /api/artists/?name=x
 router.route('/artists').get(run([], (unqfy, req) => {
 
   if (isNotUndefined(req.query.name)) {
@@ -148,6 +141,8 @@ router.route('/albums/:id').delete(run([], (unqfy, req) => {
   unqfy.removeAlbum(album.name);
 
 }));
+
+router.use('/', (req, res) => {       throwException(res, new ResourceNotFound); });
 
 
 app.use(bodyParser.json());
