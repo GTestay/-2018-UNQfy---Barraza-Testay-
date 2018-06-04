@@ -108,7 +108,7 @@ router.route('/albums/:id').get(run([], (unqfy, req) => {
 router.route('/albums').get(run([], (unqfy, req) => {
 
   if (isNotUndefined(req.query.name)) {
-    return unqfy.getAlbumsByName(req.query.name);
+    return unqfy.searchAlbumByName(req.query.name);
   } else {
     return unqfy.allAlbums();
   }

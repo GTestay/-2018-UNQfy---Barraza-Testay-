@@ -225,13 +225,6 @@ class UNQfy {
     return this.getArtistBy(a => a.id == id, id);
   }
 
-  getArtistsByName(name) {
-    return this.artists.filter(a => !a.hasThisName(name));
-  }
-
-  getAlbumsByName(name) {
-    return this.allAlbums().filter(a => !a.hasThisName(name));
-  }
 
   getAlbumBy(filter, valueError) {
     const album = this.allAlbums().find(filter);
