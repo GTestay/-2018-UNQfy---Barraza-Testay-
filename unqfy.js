@@ -195,23 +195,20 @@ class UNQfy {
     else
       throw new ArtistNotFoundException(valueError);
   }
-
-  getArtistByName(name) { return this.getArtistBy(a => a.name == name, name); }
-  getArtistById(id) { return this.getArtistBy(a => a.id == id, id); }
-
-  /*getArtistById(id) {
-    const artistSearched = this.artists.find(a => a.id == id);
-    if (artistSearched !== undefined)
-      return artistSearched;
+  
+  getArtistByName(name) { return this.getArtistBy(a => a.name == name, name); }  
+  getArtistById(id) { return this.getArtistBy(a => a.id == id, id); } 
+  
+  getAlbumBy(filter, valueError) {
+    const album = this.allAlbums().find(filter);
+    if(album !== undefined)
+      return album;
     else
-      throw new ArtistNotFoundException(id);
-  }*/
-
-  getAlbumByName(name) {
-    const albums = this.allAlbums();
-
-    return albums.find(album => album.name === name);
+      throw new AlbumNotFoundException(valueError);
   }
+
+  getAlbumByName(name) { return this.getAlbumBy(a => a.name == name, name); }
+  getAlbumById(id) { return this.getAlbumBy(a => a.id == id, id); }
 
   getTrackByName(name) {
     const album = this.findAlbumWithTrackName(name);

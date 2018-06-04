@@ -53,20 +53,20 @@ function run(params, func) {
   };
 }
 
-router.route('/artists/:id').get(run([], (unqfy, req) => {
-  let artist;
+// get/api/artist/:id
+router.route('/artist/:id').get(run([], function (unqfy, req) {
   try {
     artist = unqfy.getArtistById(req.params.id);
   } catch (ArtistNotFoundException) {
-    throw new ResourceNotFound();
+    throw new ResourceNotFound()
   }
   return JSON.stringify(artist);
 }));
 
-
-router.route('/artists').get(run([], (unqfy, req) => {
-
-  return unqfy.artists;
+// post/api/artist body=(name, country)
+router.route('/artist').post(run(['name','country'], function (unqfy, data) {
+artist = unqfy.addArtist(data);
+return JSON.stringify(artist);
 }));
 
 
@@ -88,9 +88,20 @@ router.route('/artists').delete(run(['id'], (unqfy, data) => {
   return JSON.stringify(artist);
 }));
 
-// app.use(bodyParser.json());
-app.use('/api', router);
 
+// get/api/albums/:id
+router.route('/albums/:id').get(run([], function (unqfy, req) {
+  try {
+    album = unqfy.getAlbumById(req.params.id);
+  } catch (AlbumNotFoundException) {
+    throw new ResourceNotFound()
+  }
+  return JSON.stringify(album);
+}));
+
+
+app.use('/api', router);
+// app.use(bodyParser.json());
 
 app.listen(port);
 console.log('Server started at the port: ' + port);
