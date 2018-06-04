@@ -110,6 +110,40 @@ router.route('/albums/:id').get(run([], (unqfy, req) => {
   return album;
 }));
 
+// get /api/artists?name=x
+router.route('/albums').get(run([], (unqfy, req) => {
+
+  if (isNotUndefined(req.query.name)) {
+    return unqfy.getAlbumsByName(req.query.name);
+  } else {
+    return unqfy.allAlbums();
+  }
+}));
+
+// get/api/albums?name=x
+router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, req) => {
+
+  if (isNotUndefined(req.query.name)) {
+    return unqfy.getAlbumsByName(req.query.name);
+  } else {
+    return unqfy.allAlbums();
+  }
+}));
+
+
+router.route('/albums/:id').delete(run([], (unqfy, req) => {
+
+  let artist;
+  try {
+    artist = unqfy.getArtistById(req.params.id);
+  } catch (ArtistNotFoundException) {
+    throw new ResourceNotFound();
+  }
+  unqfy.removeArtist(artist.name);
+
+}));
+
+
 app.use(bodyParser.json());
 app.use('/api', router);
 app.listen(port);
