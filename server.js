@@ -71,10 +71,10 @@ router.route('/artists').get(run([], (unqfy, req) => {
 // post/api/artist body=(name, country)
 router.route('/artists').post(run(['name', 'country'], (unqfy, req) => {
 
-  if (unqfy.existArtist(req.body.name)) {
+  if (unqfy.existArtist(req.query.name)) {
     throw new ResourceAlreadyExistError();
   } else {
-    return unqfy.addArtist(req.body);
+    return unqfy.addArtist(req.query);
   }
 
 }));
@@ -117,10 +117,10 @@ router.route('/albums').get(run([], (unqfy, req) => {
 // post /api/albums
 router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, req) => {
 
-  const artist = unqfy.getArtistById(req.body.artistId);
-  if (isNotUndefined(artist) && !artist.hasThisAlbum(req.body.name)) {
+  const artist = unqfy.getArtistById(req.query.artistId);
+  if (isNotUndefined(artist) && !artist.hasThisAlbum(req.query.name)) {
 
-    return unqfy.addAlbumToArtist(artist, req.body);
+    return unqfy.addAlbumToArtist(artist, req.query);
   } else {
     throw new ResourceNotFound();
   }
