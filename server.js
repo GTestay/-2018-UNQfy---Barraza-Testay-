@@ -64,6 +64,21 @@ router.route('/artists/:id').get(run([], (unqfy, req) => {
   return artist;
 }));
 
+// get /api/artists?name=x
+router.route('/artists').get(run([], (unqfy, req) => {
+
+  if (isNotUndefined(req.query.name)) {
+    try {
+      return unqfy.getArtistByName(req.query.name);
+    } catch (ArtistNotFoundException) {
+      throw new ResourceNotFound();
+    }
+  } else {
+    return unqfy.artists;
+  }
+}));
+
+
 // post/api/artist body=(name, country)
 router.route('/artists').post(run(['name', 'country'], (unqfy, req) => {
 
