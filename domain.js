@@ -50,10 +50,6 @@ class Album extends TrackList {
     return this.tracks.filter(track => track.withThisGenres(genres));
   }
 
-  toJSON() {
-    return `{id: ${this.id}, name: ${this.name},  artistName: ${this.artistName}, year: ${this.year} `;
-  }
-
   toString() {
     return ` name: ${this.name}, year: ${this.year}, artist: ${this.artistName} `;
   }
@@ -86,9 +82,6 @@ class Artist {
     return `name: ${this.name}, country: ${this.country}, id: ${this.id}`;
   }
 
-  toJson() {
-    return `{id: ${this.id}, name: ${this.name}, country: ${this.country} `;
-  }
 }
 
 class Playlist extends TrackList {
