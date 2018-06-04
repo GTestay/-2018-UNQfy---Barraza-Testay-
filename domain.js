@@ -61,10 +61,11 @@ class Album extends TrackList {
 
 
 class Artist {
-  constructor(name, country) {
+  constructor(name, country,id) {
     this.name = name;
     this.albums = [];
     this.country = country;
+    this.id = id;
   }
 
   addAlbum(anAlbum) {
@@ -142,5 +143,6 @@ module.exports = {
   Album,
   Artist,
   Playlist,
+  TrackList,
   Track
 };
