@@ -1,6 +1,6 @@
 /* eslint-env node, mocha */
 'use strict';
-
+const Track = require('./domain').Track;
 
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
@@ -13,7 +13,7 @@ const expect = chai.expect;
 
 const moduleUnqfy = require('./unqfy');
 const moduleSpotify = require('./Spotify');
-
+const moduleMusixMatch = require('./MusixMatch');
 
 describe('Spotify API use', () => {
 
@@ -47,9 +47,50 @@ describe('Spotify API use', () => {
   it('Dado un id de artista deberia retornarte sus albumnes', () => {
 
 
-    let promise = spotify.getAlbumsFromArtist('1QOmebWGB6FdFtW7Bo3F0W');
+    const promise = spotify.getAlbumsFromArtist('1QOmebWGB6FdFtW7Bo3F0W');
 
     return expect(promise.then(albums => albums.length)).to.eventually.equal(20);
+
+  });
+
+
+});
+
+
+describe('MusixMatch API use', () => {
+  let unqfy = null;
+  let musix = null;
+  let cancion = null;
+
+  beforeEach(() => {
+    unqfy = new moduleUnqfy.UNQfy();
+    musix = new moduleMusixMatch.MusixMatch();
+    cancion = new Track('Ghost of Karelia', '5:24', 'Metal', 'Crack the Skye');
+
+  });
+
+
+  it('dada una cancion te tiene que dar la id de musixmatch ', () => {
+
+    const promise = musix.searchTrack(cancion);
+
+    return promise.should.be.fulfilled;
+
+  });
+  it('dado un id de una cancion te retorna su letra', () => {
+
+    const promise = musix.searchTrack(cancion)
+      .then(track => musix.searchLyric(track));
+
+    return promise.should.be.fulfilled;
+  });
+
+  it('dada una cancion me retorna su letra ', () => {
+
+    const promise = unqfy.getLyricsFor(cancion);
+
+    return expect(promise.then(t => t.hasLyrics())).to.eventually.equal(true);
+
 
   });
 
