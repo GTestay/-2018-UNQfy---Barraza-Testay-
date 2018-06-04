@@ -1,31 +1,17 @@
 const req = require('request-promise');
 const fs = require('fs');
+const {generateToken} = require('./funcionesAuxiliares');
 
 class Spotify {
 
   constructor() {
-
-  }
-
-  token() {
-    const filepath = './spotifyCreds.json';
-    if (fs.existsSync(filepath)) {
-      console.log('Leyendo Token');
-      let unToken = fs.readFileSync(filepath).toString();
-      unToken = JSON.parse(unToken).access_token;
-      return unToken;
-    } else {
-      throw new Error('ARCHIVO INEXISTENTE');
-    }
-  }
-
-  api() {
-    return 'https://api.spotify.com/v1';
+    this.api = 'https://api.spotify.com/v1';
+    this.token = generateToken('./spotifyCreds.json');
   }
 
   //Devuelve una promesa con la id
   getArtistFromAPI(artist) {
-    const url = `${this.api()}/search?q=${artist.name}&type=artist`;
+    const url = `${this.api}/search?q=${artist.name}&type=artist`;
 
     console.log(url);
     const options = this.options(url);
@@ -45,7 +31,7 @@ class Spotify {
   }
 
   getAlbumsFromArtist(id) {
-    const url = `${this.api()}/artists/${id}/albums`;
+    const url = `${this.api}/artists/${id}/albums`;
 
     console.log(url);
     const options = this.options(url);
@@ -76,7 +62,7 @@ class Spotify {
   options(url) {
     return {
       uri: url,
-      headers: {Authorization: 'Bearer ' + this.token()},
+      headers: {Authorization: 'Bearer ' + this.token.access_token},
       json: true
     };
   }

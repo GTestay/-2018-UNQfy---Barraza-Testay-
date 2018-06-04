@@ -2,9 +2,10 @@ const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} 
 const picklejs = require('picklejs');
 const fs = require('fs');
 const spotifyModule = require('./Spotify');
+const musixMatchModule = require('./MusixMatch');
 const {Artist, Album, Track, TrackList, Playlist} = require('./domain');
 
-const {aplanar,isNotUndefined,isNotEmpty} = require('./funcionesAuxiliares');
+const {aplanar, isNotUndefined, isNotEmpty} = require('./funcionesAuxiliares');
 
 
 class UNQfy {
@@ -34,8 +35,8 @@ class UNQfy {
       })
       .then(albums => {
 
-        this.addAlbumsToArtist(albums, artist);
-      }
+          this.addAlbumsToArtist(albums, artist);
+        }
       )
       .catch(err => {
         console.log(err);
@@ -43,6 +44,24 @@ class UNQfy {
 
     return promise;
   }
+
+  //retorna la promesa de traer la letra de una canción.
+  // retorna la canción con la letra.
+
+  getLyricsFor(track) {
+    const lyricSearcher = new musixMatchModule.MusixMatch();
+    console.log(' Cancion a buscar: ' + track);
+
+    const promise = lyricSearcher.searchLyricsFor(track)
+      .then((lyric) => {
+        track.lyrics = lyric;
+        console.log(track);
+        return track;
+      })
+      .catch(err => console.log(err));
+    return promise;
+  }
+
 
   addAlbumsToArtist(albums, artist) {
     albums.forEach(album => artist.addAlbum(album));
@@ -89,7 +108,7 @@ class UNQfy {
                  genre (string)
             */
     const albumSearched = this.getAlbumByName(albumName);
-    const newTrack = new Track(params.name, params.duration, params.genre, albumSearched);
+    const newTrack = new Track(params.name, params.duration, params.genre, albumSearched.name);
     albumSearched.addTrack(newTrack);
   }
 
@@ -190,41 +209,57 @@ class UNQfy {
 
   getArtistBy(filter, valueError) {
     const artistSearched = this.artists.find(filter);
-    if( isNotUndefined(artistSearched ))
+    if (isNotUndefined(artistSearched))
       return artistSearched;
     else
       throw new ArtistNotFoundException(valueError);
   }
 
-  getArtistByName(name) { return this.getArtistBy(a => a.hasThisName(name), name); }
-  getArtistById(id) { return this.getArtistBy(a => a.id == id, id); }
+  getArtistByName(name) {
+    return this.getArtistBy(a => a.hasThisName(name), name);
+  }
 
-  getArtistsByName(name){
+  getArtistById(id) {
+    return this.getArtistBy(a => a.id == id, id);
+  }
+
+  getArtistsByName(name) {
     return this.artists.filter(a => !a.hasThisName(name));
   }
 
-  getAlbumsByName(name){
+  getAlbumsByName(name) {
     return this.allAlbums().filter(a => !a.hasThisName(name));
   }
 
   getAlbumBy(filter, valueError) {
     const album = this.allAlbums().find(filter);
-    if(isNotUndefined(album))
+    if (isNotUndefined(album))
       return album;
     else
       throw new AlbumNotFoundException(valueError);
   }
 
-  getAlbumByName(name) { return this.getAlbumBy(a => a.name == name, name); }
-  getAlbumById(id) { return this.getAlbumBy(a => a.id == id, id); }
+  getAlbumByName(name) {
+    return this.getAlbumBy(a => a.name == name, name);
+  }
+
+  getAlbumById(id) {
+    return this.getAlbumBy(a => a.id == id, id);
+  }
+
+
+  getTrackBy(filter, valueError) {
+    const track = this.allTracks().find(filter);
+    if (isNotUndefined(track))
+      return track;
+    else
+      throw new TrackNotFoundException(valueError);
+  }
 
   getTrackByName(name) {
-    const album = this.findAlbumWithTrackName(name);
-    if (album !== undefined) {
-      return album.getTrack(name);
-    }
-    return undefined;
+    return this.getTrackBy(a => a.name == name, name);
   }
+
 
   getPlaylistByName(name) {
     return this.playlists.find(playlist => playlist.name === name);
@@ -247,11 +282,11 @@ class UNQfy {
     return aPlaylist;
   }
 
-  existArtist(artistName){
+  existArtist(artistName) {
     try {
       this.getArtistByName(artistName);
 
-    }  catch (ArtistNotFoundException) {
+    } catch (ArtistNotFoundException) {
       return false;
     }
     return true;
@@ -261,6 +296,10 @@ class UNQfy {
   findAlbumWithTrackName(name) {
     const albums = this.allAlbums();
     return albums.find(album => album.hasThisTrack(name));
+  }
+
+  allTracks() {
+    return aplanar(this.allAlbums().map(a => a.tracks));
   }
 
   allAlbums() {
@@ -291,6 +330,7 @@ class UNQfy {
     this.idArtist++;
     return id;
   }
+
 }
 
 module.exports = {

@@ -1,4 +1,5 @@
 'use strict';
+const fs = require('fs');
 
 function generarDiccionario(array) {
   const dic = [];
@@ -40,9 +41,22 @@ function printArray(anArray) {
 }
 
 
+function generateToken(jsonPath) {
+
+  const filepath = jsonPath;
+  if (fs.existsSync(filepath)) {
+    console.log('Leyendo Token');
+    let unToken = fs.readFileSync(filepath).toString();
+    return JSON.parse(unToken);
+  } else {
+    throw new Error('ARCHIVO INEXISTENTE');
+  }
+}
+
 module.exports = {
   isNotUndefined,
   generarDiccionario,
+  generateToken,
   compareStrings,
   isNotEmpty,
   aplanar,

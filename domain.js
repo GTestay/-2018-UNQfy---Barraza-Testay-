@@ -131,16 +131,16 @@ class Playlist extends TrackList {
 }
 
 class Track {
-  constructor(name, duration, genre, album) {
+  constructor(name, duration, genre, albumName) {
     this.name = name;
     this.duration = duration;
     this.genre = genre;
-    this.album = album;
-    this.lyrics = null;
+    this.albumName = albumName;
+    this.lyrics = undefined;
   }
 
-  hasLyrics() {
-    return this.lyrics !== null;
+  hasLyrics(){
+    return this.lyrics !== undefined;
   }
 
   withThisGenres(genres) {
@@ -152,7 +152,7 @@ class Track {
   }
 
   toString() {
-    return ` name: ${this.name}, album: ${this.album.name}, genre: ${this.genre}, duration: ${this.duration} `;
+    return ` name: ${this.name}, album: ${this.albumName}, genre: ${this.genre}, duration: ${this.duration} `;
   }
 
 }

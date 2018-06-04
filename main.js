@@ -245,6 +245,25 @@ function main() {
       }
     }, ['name', 'duration', 'genre', 'album'], args);
     break;
+  case 'getLyrics':
+    runCommand(a=>{
+      let track;
+      try {
+        track = unqfy.getTrackByName(a.name);
+
+      }catch (TrackNotFoundException) {
+
+        return `La canción ${a.name} no existe`;
+      }
+      if(track.hasLyrics()){
+        return track.lyrics();
+      }else {
+        return unqfy.getLyricsFor(track);
+      }
+
+
+    },['name'],args);
+    break;
   case 'help':
     help(process.argv[3]);
     break;
