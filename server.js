@@ -32,7 +32,7 @@ router.get('/', (req, res) => {
 });
 
 function throwException(res, e) {
-  res.status(e.status).send(JSON.stringify(e));
+  res.status(e.status).send(e);
 }
 
 function run(params, func) {
@@ -54,54 +54,49 @@ function run(params, func) {
 }
 
 // get/api/artist/:id
-router.route('/artists/:id').get(run([], function (unqfy, req) {
+router.route('/artists/:id').get(run([], (unqfy, req) => {
+  let artist = undefined;
   try {
     artist = unqfy.getArtistById(req.params.id);
   } catch (ArtistNotFoundException) {
-    throw new ResourceNotFound()
+    throw new ResourceNotFound();
   }
-  return JSON.stringify(artist);
-}));
-
-// post/api/artist body=(name, country)
-router.route('/artists').post(run(['name','country'], function (unqfy, data) {
-artist = unqfy.addArtist(data);
-return JSON.stringify(artist);
-}));
-
-
-
-router.route('/artists').post(run(['name', 'country'], (unqfy, data) => {
-  const artist = unqfy.addArtist(data);
   return artist;
 }));
 
-router.route('/artists').delete(run(['id'], (unqfy, data) => {
+// post/api/artist body=(name, country)
+router.route('/artists').post(run(['name', 'country'], (unqfy, req) => {
+
+  return unqfy.addArtist(req.params);
+}));
+
+router.route('/artists').delete(run(['id'], (unqfy, req) => {
 
   let artist;
   try {
-    artist = unqfy.getArtistById(data.id);
+    artist = unqfy.getArtistById(req.params.id);
   } catch (ArtistNotFoundException) {
     throw new ResourceNotFound();
   }
   unqfy.removeArtist(artist.name);
-  return JSON.stringify(artist);
+
 }));
 
 
 // get/api/albums/:id
-router.route('/albums/:id').get(run([], function (unqfy, req) {
+router.route('/albums/:id').get(run([], (unqfy, req) => {
+  let album;
   try {
     album = unqfy.getAlbumById(req.params.id);
   } catch (AlbumNotFoundException) {
-    throw new ResourceNotFound()
+    throw new ResourceNotFound();
   }
-  return JSON.stringify(album);
+  return album;
 }));
 
+app.use(bodyParser.json());
 
 app.use('/api', router);
-// app.use(bodyParser.json());
 
 app.listen(port);
 console.log('Server started at the port: ' + port);
