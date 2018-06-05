@@ -100,7 +100,7 @@ class Artist {
   }
 
   hasThisAlbum(aName) {
-    return this.albums.includes(a => a.hasThisName(aName));
+    return this.albums.find(a => a.hasThisName(aName)) !== undefined;
   }
 
   toString() {
@@ -139,7 +139,7 @@ class Track {
     this.lyrics = undefined;
   }
 
-  hasLyrics(){
+  hasLyrics() {
     return this.lyrics !== undefined;
   }
 

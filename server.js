@@ -115,7 +115,6 @@ router.route('/albums').get(run([], (unqfy, req) => {
 
 function addAlbumnToArtist(unqfy, artist, req) {
 
-
   if (!artist.hasThisAlbum(req.body.name)) {
     return unqfy.addAlbumToArtist(artist, req.body);
   } else {
@@ -132,7 +131,6 @@ router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, req) => {
     throw new RelatedResourceNotFound();
   }
   return addAlbumnToArtist(unqfy, artist, req);
-
 }));
 
 

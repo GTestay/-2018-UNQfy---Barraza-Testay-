@@ -250,17 +250,14 @@ function main() {
       let track;
       try {
         track = unqfy.getTrackByName(a.name);
-
       }catch (TrackNotFoundException) {
-
         return `La canción ${a.name} no existe`;
       }
       if(track.hasLyrics()){
         return track.lyrics();
       }else {
-        return unqfy.getLyricsFor(track);
+        unqfy.getLyricsFor(track).then(resultado => print(resultado));
       }
-
     },['name'],args);
     break;
   case 'help':
