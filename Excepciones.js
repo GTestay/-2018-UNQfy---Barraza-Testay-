@@ -78,5 +78,5 @@ class Failure extends APIError {
 
 module.exports = {
   ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException,
-  Failure, ResourceAlreadyExistError, ResourceNotFound, BadRequest, RelatedResourceNotFound
+  APIError, Failure, ResourceAlreadyExistError, ResourceNotFound, BadRequest, RelatedResourceNotFound
 };

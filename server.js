@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const bodyParser = require('body-parser');
-const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound, RelatedResourceNotFound} = require('./Excepciones');
+const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound, RelatedResourceNotFound, APIError} = require('./Excepciones');
 const unqmod = require('./unqfy');
 const {isNotUndefined} = require('./funcionesAuxiliares');
 
@@ -27,20 +27,30 @@ function throwException(res, e) {
   res.status(e.status).send(e);
 }
 
+function errorHandler(err, req, res, next) {
+  console.error(err.name);
+  if (err instanceof APIError) {
+    res.status(err.status);
+    res.json(err);
+  } else if (err.type === 'entity.parse.failed') {
+    res.status(err.status);
+    res.json(new BadRequest());
+  } else {
+    next(err);
+  }
+}
+
 function run(params, func) {
   return function (req, res) {
     if (params.every(p => isNotUndefined(req.query[p]) || isNotUndefined(req.body[p]))) {
       const unqfy = getUNQfy('estado.json');
-      let respuesta;
-      try {
-        respuesta = func(unqfy, req);
-      } catch (ApiException) {
-        throwException(res, ApiException);
-      }
+
+      const respuesta = func(unqfy, req);
+
       saveUNQfy(unqfy, 'estado.json');
       res.json(respuesta);
     } else {
-      throwException(res, new BadRequest);
+      throw new BadRequest;
     }
   };
 }
@@ -154,6 +164,7 @@ router.use('/', (req, res) => {
 
 app.use(bodyParser.json());
 app.use('/api', router);
+app.use(errorHandler);
 app.listen(port);
 
 console.log('Server started at the port: ' + port);
