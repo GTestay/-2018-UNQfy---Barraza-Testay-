@@ -131,6 +131,66 @@ describe('Add, remove and filter data', () => {
     assert.equal(track.genres.length, 2);
     assert.equal(loadedUnqfy.getPlaylistByName('my playlist').name, 'my playlist');
   });
+
+
+
+
+  it('remove the artist should remove the tracks and the album', () => {
+
+    createAndAddArtist(unqfy, 'Guns n\' Roses', 'USA');
+    createAndAddAlbum(unqfy, 'Guns n\' Roses', 'Appetite for Destruction', 1987);
+    createAndAddTrack(unqfy,'Appetite for Destruction','Welcome to the jungle','10:20','Rock');
+    assert.isTrue(unqfy.artists.length !== 0);
+    assert.isTrue(unqfy.allAlbums().length !== 0);
+    assert.isTrue(unqfy.allTracks().length !== 0);
+
+    unqfy.removeArtist('Guns n\' Roses');
+
+    assert.isTrue(unqfy.artists.length === 0);
+    assert.isTrue(unqfy.allAlbums().length === 0);
+    assert.isTrue(unqfy.allTracks().length === 0);
+
+
+  });
+
+  it('remove the album should remove the tracks and the album but not the artist', () => {
+
+    createAndAddArtist(unqfy, 'Guns n\' Roses', 'USA');
+    createAndAddAlbum(unqfy, 'Guns n\' Roses', 'Appetite for Destruction', 1987);
+    createAndAddTrack(unqfy,'Appetite for Destruction','Welcome to the jungle','10:20','Rock');
+    assert.equal(unqfy.artists.length, 1);
+    assert.equal(unqfy.allAlbums().length, 1);
+    assert.equal(unqfy.allTracks().length, 1);
+
+    unqfy.removeAlbum('Appetite for Destruction');
+
+    assert.equal(unqfy.artists.length, 1);
+    assert.equal(unqfy.allAlbums().length, 0);
+    assert.equal(unqfy.allTracks().length, 0);
+
+
+  });
+
+
+  it('search of the album', () => {
+
+    createAndAddArtist(unqfy, 'Guns n\' Roses', 'USA');
+    createAndAddAlbum(unqfy, 'Guns n\' Roses', 'Appetite for Destruction', 1987);
+    createAndAddTrack(unqfy,'Appetite for Destruction','Jose perez','10:20','Rock');
+
+    assert.equal(unqfy.artists.length, 1);
+    assert.equal(unqfy.allAlbums().length, 1);
+    assert.equal(unqfy.allTracks().length, 1);
+
+
+    const album = unqfy.getAlbumByName('Appetite for Destruction');
+    const albums = unqfy.searchAlbumByName('Appetite for Destruction');
+
+    assert.equal(album.name,'Appetite for Destruction');
+    assert.isTrue(album.tracks.length === 1);
+    assert.isTrue(albums.includes(album));
+  });
+
 });
 
 describe('Playlist Creation and properties', () => {
@@ -139,6 +199,7 @@ describe('Playlist Creation and properties', () => {
   beforeEach(() => {
     unqfy = new libunqfy.UNQfy();
   });
+
 
   it('should create a playlist as requested', () => {
     createAndAddArtist(unqfy, 'Guns n\' Roses', 'USA');
@@ -161,4 +222,6 @@ describe('Playlist Creation and properties', () => {
     assert.isTrue(playlist.hasTrack(t2));
     assert.isTrue(playlist.hasTrack(t3));
   });
+
+
 });

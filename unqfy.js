@@ -235,7 +235,7 @@ class UNQfy {
   }
 
   getAlbumByName(name) {
-    return this.getAlbumBy(a => a.name == name, name);
+    return this.getAlbumBy(a => a.hasThisName(name), name);
   }
 
   getAlbumById(id) {

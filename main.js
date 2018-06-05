@@ -326,13 +326,14 @@ function main() {
     break;
   case 'removeAlbum':
     runCommand(a => {
-      const album = unqfy.getAlbumByName(a.name);
-      if (isNotUndefined(album)) {
+      try{
+        const album = unqfy.getAlbumByName(a.name);
         unqfy.removeAlbum(a.name);
         return `el album '${a.name}', fue eliminado correctamente.`;
-      } else {
+      }catch (AlbumNotFoundException) {
         return `error: el album '${a.name}' no existe.`;
       }
+
     }, ['name'], args);
     break;
   case 'removeArtist':
@@ -372,7 +373,7 @@ function main() {
     runCommand(a => {
       const albums = unqfy.searchAlbumByName(a.name);
       if (isNotEmpty(albums)) {
-        albums.forEach(a => print(`Nombre: ${a.name}`));
+        albums.forEach(a => print(`${a.toString()}`));
         return '\n';
       } else {
         return 'No hay Albums para mostrar.';

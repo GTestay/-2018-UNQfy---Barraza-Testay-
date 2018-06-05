@@ -31,12 +31,18 @@ class MusixMatch {
     const options = this.options(`/track.search?q_track=${aTrackToSearch.name}`);
     return rp.get(options).then(response => {
       const trackList = response.message.body.track_list;
+      console.log(trackList.length);
+
       const track = trackList
         .map(t => t.track)
         .find((t) => t.album_name == (aTrackToSearch.albumName));
 
-      // console.log(track);
-      return track;
+      console.log(track);
+      if(track !== undefined){
+        return track;
+      }else {
+        return trackList.map(t=> t.track)[0];
+      }
     });
   }
 
