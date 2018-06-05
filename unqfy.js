@@ -35,8 +35,8 @@ class UNQfy {
       })
       .then(albums => {
 
-          this.addAlbumsToArtist(albums, artist);
-        }
+        return this.addAlbumsToArtist(albums, artist);
+      }
       )
       .catch(err => {
         console.log(err);
@@ -66,7 +66,7 @@ class UNQfy {
   addAlbumsToArtist(albums, artist) {
 
 
-    albums.forEach(album => this.addAlbumToArtist(artist,album));
+   return albums.forEach(album => this.addAlbumToArtist(artist,album));
   }
 
   // ADD METHODS
@@ -92,7 +92,7 @@ class UNQfy {
     return this.addAlbumToArtist(artist, params);
   }
 
-    addAlbumToArtist(artist, params) {
+  addAlbumToArtist(artist, params) {
     const newAlbum = new Album(artist.name, params.name, params.year, this.idForAlbum());
     artist.addAlbum(newAlbum);
     return newAlbum;

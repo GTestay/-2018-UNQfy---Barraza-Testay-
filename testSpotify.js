@@ -48,7 +48,7 @@ describe('Spotify API use', () => {
 
 
     const promise = spotify.getAlbumsFromArtist('1QOmebWGB6FdFtW7Bo3F0W');
-
+    promise.then(a=>console.log(a));
     return expect(promise.then(albums => albums.length)).to.eventually.equal(20);
 
   });

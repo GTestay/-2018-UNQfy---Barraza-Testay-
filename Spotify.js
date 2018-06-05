@@ -41,12 +41,10 @@ class Spotify {
 
         const albums = [];
 
-
-        response.items.forEach(a => {
+        response.items.filter(a=>a.type === 'album').forEach(a => {
           albums.push({
             name: a.name,
-            id: a.id,
-            images: a.images,
+            image: a.images[0],
             year: a.release_date
           });
         });

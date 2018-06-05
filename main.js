@@ -196,7 +196,7 @@ function runCommand(func, params, args) {
 }
 
 function main() {
-  const unqfy = getUNQfy('estado.json');
+  let unqfy = getUNQfy('estado.json');
   const comando = process.argv[2];
   const args = generarDiccionario(process.argv.slice(3));
 
@@ -245,21 +245,7 @@ function main() {
       }
     }, ['name', 'duration', 'genre', 'album'], args);
     break;
-  case 'getLyrics':
-    runCommand(a=>{
-      let track;
-      try {
-        track = unqfy.getTrackByName(a.name);
-      }catch (TrackNotFoundException) {
-        return `La canción ${a.name} no existe`;
-      }
-      if(track.hasLyrics()){
-        return track.lyrics();
-      }else {
-        unqfy.getLyricsFor(track).then(resultado => print(resultado));
-      }
-    },['name'],args);
-    break;
+
   case 'help':
     help(process.argv[3]);
     break;
@@ -274,7 +260,7 @@ function main() {
   case 'listArtist':
     if (isNotEmpty(unqfy.artists)) {
       print('Artists:\n');
-      unqfy.artists.forEach(a => console.log(`Nombre: ${a.name}`));
+      unqfy.artists.forEach(a => console.log(a.albums));
     } else {
       console.log('No hay artistas registrados.');
     }
@@ -337,15 +323,6 @@ function main() {
         return `no hay tracks del genero: '${a.genres}'.`;
       }
     }, ['genres'], args);
-    break;
-  case 'populateAlbumsForArtist':
-    runCommand(a => {
-      unqfy.populateAlbumsForArtist(a.name).then(promise => {
-
-        printArray(unqfy.getArtistByName(a.name).albums);
-        unqfy.save('estado.json');
-      });
-    }, ['name'], args);
     break;
   case 'removeAlbum':
     runCommand(a => {
@@ -448,6 +425,42 @@ function main() {
     print('error: el comando no es correcto');
   }
   saveUNQfy(unqfy, 'estado.json');
+
+  switch (comando){
+  case 'getLyrics':
+    runCommand(a=>{
+      unqfy = getUNQfy('estado.json');
+
+      let track;
+      try {
+        track = unqfy.getTrackByName(a.name);
+      }catch (TrackNotFoundException) {
+        return `La canción ${a.name} no existe`;
+      }
+      if(track.hasLyrics()){
+        return track.lyrics();
+      }else {
+        unqfy.getLyricsFor(track).then(resultado => {
+          print(resultado);
+          unqfy.save('estado.json');
+        });
+      }
+    },['name'],args);
+    break;
+
+  case 'populateAlbumsForArtist':
+    runCommand(a => {
+      unqfy = getUNQfy('estado.json');
+      unqfy.populateAlbumsForArtist(a.name).then(promise => {
+
+        printArray(unqfy.getArtistByName(a.name).albums);
+        unqfy.save('estado.json');
+      });
+    }, ['name'], args);
+    break;
+
+  }
+
 }
 
 main();
