@@ -8,7 +8,7 @@ const {isNotUndefined} = require('./funcionesAuxiliares');
 
 const router = express.Router();
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 
 function getUNQfy(filename) {
   let unqfy = new unqmod.UNQfy();
@@ -44,9 +44,9 @@ function run(params, func) {
   return function (req, res) {
     if (params.every(p => isNotUndefined(req.query[p]) || isNotUndefined(req.body[p]))) {
       const unqfy = getUNQfy('estado.json');
-
+        console.log("Cargar")
       const respuesta = func(unqfy, req);
-
+      console.log("Salvando")
       saveUNQfy(unqfy, 'estado.json');
       res.json(respuesta);
     } else {
@@ -134,6 +134,7 @@ function addAlbumnToArtist(unqfy, artist, req) {
 
 // post /api/albums
 router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, req) => {
+
   let artist;
   try {
     artist = unqfy.getArtistById(req.body.artistId);
@@ -142,6 +143,7 @@ router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, req) => {
   }
   return addAlbumnToArtist(unqfy, artist, req);
 }));
+
 
 
 // delete /albums/:id

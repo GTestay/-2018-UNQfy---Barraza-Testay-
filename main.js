@@ -1,4 +1,4 @@
-﻿/* eslint-disable no-case-declarations */
+/* eslint-disable no-case-declarations */
 const fs = require('fs');const unqmod = require('./unqfy');
 const {isNotUndefined, isNotEmpty, generarDiccionario, print, printArray} = require('./funcionesAuxiliares');
 const {ArtistNotFoundException,AlbumNotFoundException,TrackNotFoundException} = require('./Excepciones');
@@ -167,6 +167,7 @@ addArtist
 addAlbum
 addPlayList
 addTrack
+getLyrics
 listArtist
 listAlbum
 listPlaylist
@@ -174,6 +175,7 @@ listTrack
 listTrackByAlbum
 listTrackByArtist
 listTrackByGenre
+populateAlbumsForArtist
 searchArtist
 searchAlbum
 searchPlaylist
@@ -260,7 +262,7 @@ function main() {
   case 'listArtist':
     if (isNotEmpty(unqfy.artists)) {
       print('Artists:\n');
-      unqfy.artists.forEach(a => console.log(a.albums));
+      unqfy.artists.forEach(a => console.log(a.toString()));
     } else {
       console.log('No hay artistas registrados.');
     }
@@ -277,7 +279,7 @@ function main() {
     const tracks = unqfy.listTracks();
     if (isNotEmpty(tracks)) {
       print(`Tracks (${tracks.length}):\n`);
-      tracks.forEach(t => console.log(`Nombre: ${t.name} Duracion: ${t.duration} Album: ${t.album.name}`));
+      tracks.forEach(t => console.log(`Nombre: ${t.name} Duracion: ${t.duration} Album: ${t.albumName} Letra: ${t.lyrics}`));
     } else {
       console.log('No hay tracks registrados.');
     }
@@ -439,7 +441,7 @@ function main() {
         return `La canción ${a.name} no existe`;
       }
       if(track.hasLyrics()){
-        return track.lyrics();
+        return track.lyrics ;
       }else {
         unqfy.getLyricsFor(track).then(resultado => {
           print(resultado);
