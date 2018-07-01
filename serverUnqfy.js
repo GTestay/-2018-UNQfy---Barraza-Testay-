@@ -15,11 +15,14 @@ function getUNQfy(filename) {
   if (fs.existsSync(filename)) {
     unqfy = unqmod.UNQfy.load(filename);
   }
+  console.log('Cargar');
   return unqfy;
 }
 
 function saveUNQfy(unqfy, filename) {
   unqfy.save(filename);
+  console.log('Salvando');
+
 }
 
 
@@ -44,9 +47,7 @@ function run(params, func) {
   return function (req, res) {
     if (params.every(p => isNotUndefined(req.query[p]) || isNotUndefined(req.body[p]))) {
       const unqfy = getUNQfy('estado.json');
-        console.log("Cargar")
       const respuesta = func(unqfy, req);
-      console.log("Salvando")
       saveUNQfy(unqfy, 'estado.json');
       res.json(respuesta);
     } else {
