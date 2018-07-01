@@ -198,6 +198,7 @@ describe('Playlist Creation and properties', () => {
 
   beforeEach(() => {
     unqfy = new libunqfy.UNQfy();
+
   });
 
 

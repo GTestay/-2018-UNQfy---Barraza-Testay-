@@ -1,5 +1,4 @@
 const req = require('request-promise');
-const fs = require('fs');
 const {generateToken} = require('./funcionesAuxiliares');
 
 class Spotify {
