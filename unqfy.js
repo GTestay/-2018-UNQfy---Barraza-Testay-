@@ -1,11 +1,15 @@
-const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} = require('./Excepciones');
 const picklejs = require('picklejs');
 const fs = require('fs');
-const spotifyModule = require('./Spotify');
-const musixMatchModule = require('./MusixMatch');
+const {aplanar, isNotUndefined, isNotEmpty} = require('./funcionesAuxiliares');
+
 const {Artist, Album, Track, TrackList, Playlist} = require('./domain');
 
-const {aplanar, isNotUndefined, isNotEmpty} = require('./funcionesAuxiliares');
+const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} = require('./Excepciones');
+
+const {Spotify} = require('./Spotify');
+const {MusixMatch} = require('./MusixMatch');
+const {NotificadorUnqfy}= require('./notificacionUnqfy');
+
 
 
 class UNQfy {
@@ -15,7 +19,14 @@ class UNQfy {
     this.idArtist = 0;
     this.artists = [];
     this.playlists = [];
+    this.artistNotificationService = new NotificadorUnqfy();
+    this.lyricSearcher = new MusixMatch();
   }
+
+  addNotificationService(notificationService){
+    this.artistNotificationService = notificationService;
+  }
+
 
   //Dado un nombre de artista, busca sus albumnes en spotify
   // y los guarda en él.
@@ -27,7 +38,7 @@ class UNQfy {
     } catch (ArtistNotFoundException) {
       console.log('EL ARTISTA NO EXISTE');
     }
-    const spotify = new spotifyModule.Spotify();
+    const spotify = new Spotify();
 
     const promise = spotify.getArtistFromAPI(artist)
       .then(artist => {
@@ -35,8 +46,8 @@ class UNQfy {
       })
       .then(albums => {
 
-        return this.addAlbumsToArtist(albums, artist);
-      }
+          return this.addAlbumsToArtist(albums, artist);
+        }
       )
       .catch(err => {
         console.log(err);
@@ -49,24 +60,22 @@ class UNQfy {
   // retorna la canción con la letra.
 
   getLyricsFor(track) {
-    const lyricSearcher = new musixMatchModule.MusixMatch();
+
     console.log(' Cancion a buscar: ' + track);
 
-    const promise = lyricSearcher.searchLyricsFor(track)
+    return this.lyricSearcher.searchLyricsFor(track)
       .then((lyric) => {
         track.lyrics = lyric;
         console.log(track);
         return track;
       })
       .catch(err => console.log(err));
-    return promise;
   }
 
 
   addAlbumsToArtist(albums, artist) {
 
-
-   return albums.forEach(album => this.addAlbumToArtist(artist,album));
+    return albums.forEach(album => this.addAlbumToArtist(artist,album));
   }
 
   // ADD METHODS
@@ -79,6 +88,7 @@ class UNQfy {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
     const newArtist = new Artist(params.name, params.country, this.idForArtist());
     this.artists.push(newArtist);
+    this.addSubscriberFor(newArtist);
     return newArtist;
   }
 
@@ -128,12 +138,15 @@ class UNQfy {
   // REMOVE METHODS
   removeArtist(aName) {
     const artistToRemove = this.getArtistByName(aName);
+    this.removeArtistSubscription(artistToRemove);
+
     const tracksToDelete = artistToRemove.albums.map(album => album.tracks);
 
     this.playlists.forEach(playlist => playlist.removeTracks(tracksToDelete));
 
     this.artists.splice(this.artists.indexOf(artistToRemove), 1);
   }
+
 
   removePlaylist(aName) {
     this.playlists = this.playlists.filter(playlist => playlist.name !== aName);
@@ -308,7 +321,6 @@ class UNQfy {
 
   static load(filename = 'estado.json') {
     const fs = new picklejs.FileSerializer();
-    // TODO: Agregar a la lista todas las clases que necesitan ser instanciadas
     const classes = [UNQfy, Album, Artist, Playlist, Track, TrackList];
     fs.registerClasses(...classes);
     return fs.load(filename);
@@ -326,9 +338,16 @@ class UNQfy {
     return id;
   }
 
+  addSubscriberFor(newArtist) {
+    newArtist.addObserver(this.artistNotificationService);
+  }
+
+  removeArtistSubscription(artist){
+    this.artistNotificationService.removeArtistSubscription(artist);
+  }
+
 }
 
 module.exports = {
   UNQfy,
 };
-

@@ -2,6 +2,7 @@
 
 const assert = require('chai').assert;
 const libunqfy = require('./unqfy');
+const {NotificadorUnqfy} = require('./notificacionUnqfy');
 
 
 function createAndAddArtist(unqfy, artistName, country) {
