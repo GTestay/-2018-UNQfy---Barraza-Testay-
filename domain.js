@@ -1,4 +1,5 @@
 const {aplanar, compareStrings} = require('./funcionesAuxiliares');
+const {Subject} = require('./observerPattern');
 
 class TrackList {
   constructor(name) {
@@ -68,9 +69,9 @@ class Album extends TrackList {
   }
 }
 
-
-class Artist {
+class Artist extends Subject{
   constructor(name, country, id) {
+    super();
     this.name = name;
     this.albums = [];
     this.country = country;
@@ -79,6 +80,7 @@ class Artist {
 
   addAlbum(anAlbum) {
     this.albums.push(anAlbum);
+    this.notificar(anAlbum);
   }
 
   removeAlbum(aName) {
@@ -105,6 +107,12 @@ class Artist {
 
   toString() {
     return `name: ${this.name}, country: ${this.country}, id: ${this.id}`;
+  }
+
+  //metodo para notificaciones
+
+  notificar(unAlbum){
+    this.updateAll(unAlbum);
   }
 
 }
