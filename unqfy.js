@@ -8,7 +8,7 @@ const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} 
 
 const {Spotify} = require('./Spotify');
 const {MusixMatch} = require('./MusixMatch');
-const {NotificadorUnqfy}= require('./notificacionUnqfy');
+const {NotificadorUnqfy,NotificacionApiRest}= require('./notificacionUnqfy');
 
 
 
@@ -23,9 +23,15 @@ class UNQfy {
     this.lyricSearcher = new MusixMatch();
   }
 
-  addNotificationService(notificationService){
-    this.artistNotificationService = notificationService;
+  addSubscriberFor(newArtist) {
+    newArtist.addObserver(this.artistNotificationService);
   }
+
+  removeArtistSubscription(artist){
+
+    this.artistNotificationService.update('Baja Artista',artist);
+  }
+
 
 
   //Dado un nombre de artista, busca sus albumnes en spotify
@@ -46,8 +52,8 @@ class UNQfy {
       })
       .then(albums => {
 
-          return this.addAlbumsToArtist(albums, artist);
-        }
+        return this.addAlbumsToArtist(albums, artist);
+      }
       )
       .catch(err => {
         console.log(err);
@@ -321,7 +327,7 @@ class UNQfy {
 
   static load(filename = 'estado.json') {
     const fs = new picklejs.FileSerializer();
-    const classes = [UNQfy, Album, Artist, Playlist, Track, TrackList];
+    const classes = [MusixMatch,NotificadorUnqfy,NotificacionApiRest,UNQfy, Album, Artist, Playlist, Track, TrackList];
     fs.registerClasses(...classes);
     return fs.load(filename);
   }
@@ -336,14 +342,6 @@ class UNQfy {
     const id = this.idArtist;
     this.idArtist++;
     return id;
-  }
-
-  addSubscriberFor(newArtist) {
-    newArtist.addObserver(this.artistNotificationService);
-  }
-
-  removeArtistSubscription(artist){
-    this.artistNotificationService.removeArtistSubscription(artist);
   }
 
 }
