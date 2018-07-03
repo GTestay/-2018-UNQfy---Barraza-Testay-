@@ -105,6 +105,14 @@ class Artist extends Subject{
     return this.albums.find(a => a.hasThisName(aName)) !== undefined;
   }
 
+  toJSON(){
+    return { name: this.name,
+      albums: this.albums,
+      country: this.country,
+      id: this.id
+    };
+  }
+
   toString() {
     return `name: ${this.name}, country: ${this.country}, id: ${this.id}`;
   }
@@ -112,7 +120,7 @@ class Artist extends Subject{
   //metodo para notificaciones
 
   notificar(unAlbum){
-    this.updateAll(unAlbum);
+    this.updateAll('Agregar Album',unAlbum);
   }
 
 }
