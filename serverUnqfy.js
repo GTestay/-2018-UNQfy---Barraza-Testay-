@@ -64,7 +64,7 @@ router.route('/artists/:id').get(run([], (unqfy, req) => {
   } catch (ArtistNotFoundException) {
     throw new ResourceNotFound();
   }
-  return artist;
+  return artist.toJSON();
 }));
 
 // get /api/artists?name=x

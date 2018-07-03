@@ -4,11 +4,53 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound, RelatedResourceNotFound, APIError} = require('./Excepciones');
 const {isNotUndefined} = require('./funcionesAuxiliares');
-const Notificador = require('./notificador');
+const {Notificador} = require('./notificador');
+const rp = require('request-promise');
+
 
 const router = express.Router();
 
-const port = 5001;
+const port = 8001;
+
+
+
+class ApiUnqfy {
+  constructor(){
+    this.route = 'http://localhost';
+    this.port = 8000;//TODO: leerse de algún lado
+
+  }
+  options(endpoint) {
+    return {
+      uri: this.generateUrl(endpoint),
+      json: true
+    };
+  }
+
+
+  generateUrl(endpoint) {
+    return `${this.route}:${this.port}/api/${endpoint} `;
+  }
+
+  artistExist(artistId){
+    const options = this.options(`artists/${artistId}`);
+    console.log('Buscando Artista');
+
+    return rp.get(options).then(artist=>{
+      console.log('ACERTO');
+      console.log(artist);
+      return true;
+    })
+      .catch(response =>{
+        console.log('ERROR');
+        const err = response.error;
+        if(err.statusCode === 402){
+          throw new ResourceNotFound();
+        }
+      });
+  }
+
+}
 
 
 function levantarNotificador(filename) {
@@ -16,7 +58,7 @@ function levantarNotificador(filename) {
   if (fs.existsSync(filename)) {
     notificador = Notificador.load(filename);
   } else {
-    notificador = new Notificador;
+    notificador = new Notificador();
 
   }
   console.log('Cargar');
@@ -37,7 +79,8 @@ function validateParams(params, req) {
 function run(params, func) {
   return function (req, res) {
     if (validateParams(params, req)) {
-      const notificador = levantarNotificador('estado.json');
+
+      const notificador = levantarNotificador('notificador.json');
       const respuesta = func(notificador, req);
       res.json(respuesta);
     } else {
@@ -50,25 +93,42 @@ function run(params, func) {
 /**
  * Endpoints
  * */
-router.use('/', (req, res) => {
-  throwException(res, new ResourceNotFound);
-});
+
+function existArtist(artistId) {
+  const unqfy = new ApiUnqfy();
+
+  return unqfy.artistExist(artistId);
+
+}
+
 
 //POST /api/subscribe body = ["artistId","email"];
-router.route('/subscribe').get(run(['artistId','email'], (notificador, req) => {
+router.route('/subscribe').post(run(['artistId','email'], (notificador, req) => {
 
-  notificador.subscribe(req.body.email, req.body.artistId).then(not =>
-    guardarNotificador(not, 'estado.json')
+  console.log('hacer algo');
+  existArtist(req.body.artistId).then(asd =>{
+    console.log('registrar mail');
+
+    notificador.subscribe(req.body.email, req.body.artistId);
+
+  }).then(not =>
+    guardarNotificador(notificador, 'notificador.json')
   );
 
 }));
 
 //POST /api/unsubscribe  body = ["artistId","email"];
-router.route('/unsubscribe').get(run(['artistId','email'], (notificador, req) => {
+router.route('/unsubscribe').post(run(['artistId','email'], (notificador, req) => {
 
-  notificador.unsubscribe(req.body.email, req.body.artistId).then(not =>
-    guardarNotificador(not, 'estado.json')
-  );;
+  existArtist(req.body.artistId).then(
+
+    notificador.unsubscribe(req.body.artistId,req.body.email)
+
+  ).then(not =>
+    guardarNotificador(notificador, 'notificador.json')
+  );
+
+
 }));
 
 //POST /api/notify
@@ -76,30 +136,35 @@ router.route('/unsubscribe').get(run(['artistId','email'], (notificador, req) =>
 // "subject": "Nuevo Album para artsta Chano",
 // "message": "Se ha agregado el album XXX al artista Chano",
 // "from": "UNQfy <UNQfy.notifications@gmail.com>",
-router.route('/notify').get(run([], (notificador, req) => {
+router.route('/notify').post(run(['artistId','subject','message','from'], (notificador, req) => {
 
-  guardarNotificador(notificador, 'estado.json').then(not =>
-    guardarNotificador(not, 'estado.json')
+  existArtist(req.body.artistId).then(
+
+    notificador.notify(req.body.artistId,req.body.subject,req.body.message,req.body.from)
+
+  ).then(not =>
+    guardarNotificador(notificador, 'notificador.json')
   );
 }));
 
-//GET /api/subscriptions
-//response
-// "artistId": <artistID>,
+//GET /api/subscriptions/id
 // "subscriptors": [<email1>, <email2>]
-router.route('/subscriptions').get(run(['artistId'], (notificador, req) => {
+router.route('/subscriptions/:id').get(run([], (notificador, req) => {
 
-  return notificador.subscriptions(req.body.artistId);
+  return notificador.subscriptions(req.params.id);
 }));
 
 //DELETE /api/subscriptions body "artistId": <artistID>,
-router.route('/subscriptions').get(run(['artistId'], (notificador, req) => {
+router.route('/subscriptions').delete(run(['artistId'], (notificador, req) => {
 
-  throw new Failure;
+  existArtist(req.body.artistId).then(
 
-  notificador.removeArtist(req.body.artistId).then(not =>
-    guardarNotificador(not, 'estado.json')
+    notificador.removeArtist(req.body.artistId)
+
+  ).then(not =>
+    guardarNotificador(notificador, 'notificador.json')
   );
+
 }));
 
 
@@ -120,6 +185,11 @@ function errorHandler(err, req, res, next) {
   }
 }
 
+/**
+router.use('/', (req, res) => {
+  throwException(res, new ResourceNotFound);
+});
+*/
 app.use(bodyParser.json());
 app.use('/api', router);
 app.use(errorHandler);

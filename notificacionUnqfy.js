@@ -1,52 +1,73 @@
 const {Observer} = require('./observerPattern');
+const rp = require('request-promise');
 
-class ApiNotification {
 
-  notificarBajaArtista(anArtist){
-
-  }
-  notificarNuevoAlbum(anAlbum){
-
-  }
-}
-
-class ApiNotificationStateless extends ApiNotification{
-
+class NotificacionApiRest {
   constructor(){
-    super();
-    this.notificacionesEnviadas = 0;
+
+    this.route = 'localhost';
+    this.port = 8001;//TODO: leerse de algún lado
+
   }
-  notificarNuevoAlbum(anAlbum){
-    console.log('Un nuevo album es notificado ');
-    this.notificacionesEnviadas ++;
+  options(endpoint,body) {
+    return {
+      uri: this.generateUrl(endpoint),
+      body: (body),
+      json: true
+    };
   }
+
+
+  generateUrl(endpoint) {
+    return `${this.route}:${this.port}/api/${endpoint} `;
+  }
+
 
   notificarBajaArtista(anArtist){
-    console.log('Un artista se dio de Baja ');
-    this.notificacionesEnviadas ++;
+
+    const jsonBody = {
+      artistId: 1 ,
+      message : 'Baja Artista',
+      from: 'unqfy@gmail.com',
+      to:'nadie',
+
+    };
+    const options = this.options('notify',jsonBody);
+
+    rp.post(options);
 
   }
+  notificarNuevoAlbum(anAlbum){
 
+  }
 }
+
 
 class NotificadorUnqfy extends Observer{
 
-  constructor(apiNotificaciones){
+  constructor(){
     super();
-    this.apiNotificaciones = apiNotificaciones || new ApiNotificationStateless();
+    this.apiNotificaciones = new NotificacionApiRest();
 
   }
 
-  update(nuevoAlbum){
-    this.apiNotificaciones.notificarNuevoAlbum(nuevoAlbum);
-  }
+  update(caso,data){
 
-  removeArtistSubscription(artist){
-    this.apiNotificaciones.notificarBajaArtista(artist);
+    switch (caso){
+
+    case 'Agregar Album':
+      this.apiNotificaciones.notificarNuevoAlbum(data);
+
+      break;
+    case 'Baja Artista':
+
+      this.apiNotificaciones.notificarBajaArtista(data);
+      break;
+
+    }
+
   }
 
 }
 
-module.exports = {
-  NotificadorUnqfy,ApiNotificationStateless,ApiNotification
-};
+module.exports = {NotificadorUnqfy,NotificacionApiRest};
