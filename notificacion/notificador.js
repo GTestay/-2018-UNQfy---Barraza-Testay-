@@ -123,12 +123,9 @@ class ApiUnqfy {
       console.log('Artista Encontrado');
       return true;
     })
-      .catch(response =>{
-        const err = response.error;
-        console.error(err);
-        if(err.statusCode === 404){
-          throw new ResourceNotFound();
-        }
+      .catch(err => {
+        console.log('Artista no existe');
+        return false;
       });
   }
 
