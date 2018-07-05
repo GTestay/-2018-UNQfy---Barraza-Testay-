@@ -3,6 +3,7 @@ const {MailSender} = require('./mailSender');
 const rp = require('request-promise');
 const { ResourceNotFound} = require('./Excepciones');
 
+
 class Artist {
   constructor(id){
     this.artistId = id || 0;
@@ -29,11 +30,13 @@ class Notificador {
 
   notify(artistId,subject,message,from){
     const artist =this.find(artistId);
-
+    if(undefined === artist){
+      throw new ResourceNotFound();
+    }
     this.mailSender.sendMail(artist,subject,message,from)
-        .catch(err => {
-          throw new Error(err.message);
-        });
+      .catch(err => {
+        console.error(err);
+      });
   }
 
   subscribe(email,artistId){
@@ -69,8 +72,11 @@ class Notificador {
 
   subscriptions(artistId){
     const artist = this.find(artistId);
-
-    return artist.emails ;
+    if(undefined !== artist){
+      return artist.emails ;
+    }else{
+      throw new ResourceNotFound();
+    }
   }
 
   removeArtist(artistId){
@@ -85,7 +91,7 @@ class Notificador {
 
   static load(filename = 'notificador.json') {
     const fs = new picklejs.FileSerializer();
-    const classes = [Notificador,Artist];
+    const classes = [MailSender,Notificador,Artist];
     fs.registerClasses(...classes);
     return fs.load(filename);
   }
@@ -119,7 +125,7 @@ class ApiUnqfy {
     })
       .catch(response =>{
         const err = response.error;
-        console.err(err);
+        console.error(err);
         if(err.statusCode === 404){
           throw new ResourceNotFound();
         }

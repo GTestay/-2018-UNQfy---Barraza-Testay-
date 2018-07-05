@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound, RelatedResourceNotFound, APIError} = require('./Excepciones');
 const {isNotUndefined} = require('./funcionesAuxiliares');
 const {Notificador,ApiUnqfy} = require('./notificador');
+require('dotenv').config();
 
 const router = express.Router();
 
@@ -83,7 +84,7 @@ router.route('/unsubscribe').post(run(['artistId','email'], (notificador, req) =
 }));
 
 //POST /api/notify
-// "artistId":
+// "artistId": 0
 // "subject": "Nuevo Album para artsta Chano",
 // "message": "Se ha agregado el album XXX al artista Chano",
 // "from": "UNQfy <UNQfy.notifications@gmail.com>",
@@ -103,6 +104,7 @@ router.route('/notify').post(run(['artistId','subject','message','from'], (notif
 router.route('/subscriptions/:id').get(run([], (notificador, req) => {
 
   return notificador.subscriptions(req.params.id);
+
 }));
 
 //DELETE /api/subscriptions body "artistId": <artistID>,
@@ -147,3 +149,4 @@ app.use(errorHandler);
 app.listen(port);
 
 console.log('Server started at the port: ' + port);
+
