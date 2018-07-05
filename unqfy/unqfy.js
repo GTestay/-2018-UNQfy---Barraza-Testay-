@@ -3,14 +3,14 @@ const fs = require('fs');
 const {aplanar, isNotUndefined, isNotEmpty} = require('./funcionesAuxiliares');
 
 const {Artist, Album, Track, TrackList, Playlist} = require('./domain');
-const {NotificacionApiRest,NotificadorUnqfy}=require('./notificacionUnqfy');
+const {NotificacionApiRest, NotificadorUnqfy} = require('./notificacionUnqfy');
 
 const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} = require('./Excepciones');
 const {Subject} = require('./observerPattern');
 const {Spotify} = require('./Spotify');
 const {MusixMatch} = require('./MusixMatch');
 
-class UNQfy extends Subject{
+class UNQfy extends Subject {
 
   constructor() {
     super();
@@ -40,8 +40,8 @@ class UNQfy extends Subject{
       })
       .then(albums => {
 
-        return this.addAlbumsToArtist(albums, artist);
-      }
+          return this.addAlbumsToArtist(albums, artist);
+        }
       )
       .catch(err => {
         console.log(err);
@@ -69,7 +69,7 @@ class UNQfy extends Subject{
 
   addAlbumsToArtist(albums, artist) {
 
-    return albums.forEach(album => this.addAlbumToArtist(artist,album));
+    return albums.forEach(album => this.addAlbumToArtist(artist, album));
   }
 
   // ADD METHODS
@@ -99,11 +99,11 @@ class UNQfy extends Subject{
     const newAlbum = new Album(artist.name, params.name, params.year, this.idForAlbum());
     artist.addAlbum(newAlbum);
 
-    let data={};
+    const data = {};
     data.artist = artist;
     data.album = newAlbum;
-    this.changed('Agregar Album',data);
-    
+    this.changed('Agregar Album', data);
+
     return newAlbum;
   }
 
@@ -137,10 +137,9 @@ class UNQfy extends Subject{
   // REMOVE METHODS
   removeArtist(aName) {
     const artistToRemove = this.getArtistByName(aName);
-    let data = {};
-    data.artist =artistToRemove; 
-
-    this.changed('Baja Artista',data);
+    const data = {};
+    data.artist = artistToRemove;
+    this.changed('Baja Artista', data);
 
     const tracksToDelete = artistToRemove.albums.map(album => album.tracks);
 
@@ -318,16 +317,13 @@ class UNQfy extends Subject{
 
   //Persistence
   save(filename = 'estado.json') {
-    let listenersBkp = this.listeners;
-    this.listeners = [];
     new picklejs.FileSerializer().serialize(filename, this);
-    this.listeners = listenersBkp;
-  
+
   }
 
   static load(filename = 'estado.json') {
     const fs = new picklejs.FileSerializer();
-    const classes = [NotificacionApiRest,NotificadorUnqfy, MusixMatch,UNQfy, Album, Artist, Playlist, Track, TrackList];
+    const classes = [NotificadorUnqfy, MusixMatch, UNQfy, Album, Artist, Playlist, Track, TrackList];
     fs.registerClasses(...classes);
     return fs.load(filename);
   }
