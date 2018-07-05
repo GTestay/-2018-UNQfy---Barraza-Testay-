@@ -18,18 +18,15 @@ function observar(unqfy){
 
 function getUNQfy(filename) {
   let unqfy = new unqmod.UNQfy();
+  observar(unqfy);
   if (fs.existsSync(filename)) {
     unqfy = unqmod.UNQfy.load(filename);
   }
-  // observar(unqfy);
-  console.log('Cargar');
   return unqfy;
 }
 
 function saveUNQfy(unqfy, filename) {
   unqfy.save(filename);
-  console.log('Salvando');
-
 }
 
 
@@ -38,7 +35,7 @@ function throwException(res, e) {
 }
 
 function errorHandler(err, req, res, next) {
-  console.error(err);
+  console.error('Error '+ err.status);
   if (err instanceof APIError) {
     res.status(err.status);
     res.json(err);
@@ -71,7 +68,7 @@ router.route('/artists/:id').get(run([], (unqfy, req) => {
   } catch (ArtistNotFoundException) {
     throw new ResourceNotFound();
   }
-  return artist.toJSON();
+  return artist;
 }));
 
 // get /api/artists?name=x
@@ -108,7 +105,6 @@ router.route('/artists/:id').delete(run([], (unqfy, req) => {
   unqfy.removeArtist(artist.name);
 
 }));
-
 
 // get /api/albums/:id
 router.route('/albums/:id').get(run([], (unqfy, req) => {
@@ -152,8 +148,6 @@ router.route('/albums').post(run(['artistId', 'name', 'year'], (unqfy, req) => {
   return addAlbumnToArtist(unqfy, artist, req);
 }));
 
-
-
 // delete /albums/:id
 router.route('/albums/:id').delete(run([], (unqfy, req) => {
 
@@ -170,7 +164,6 @@ router.route('/albums/:id').delete(run([], (unqfy, req) => {
 router.use('/', (req, res) => {
   throwException(res, new ResourceNotFound);
 });
-
 
 app.use(bodyParser.json());
 app.use('/api', router);

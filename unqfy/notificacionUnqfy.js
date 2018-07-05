@@ -3,11 +3,17 @@ const rp = require('request-promise');
 
 
 class NotificacionApiRest {
-  constructor(){
-    this.route = 'localhost';
+  constructor() {
+    this.route = 'http://localhost';
     this.port = process.env.NOTIFICATION_PORT || 8001;
   }
-  options(endpoint,body) {
+
+
+  unqfy() {
+    return 'UNQfy <UNQfy.notifications@gmail.com>';
+  }
+
+  options(endpoint, body) {
     return {
       uri: this.generateUrl(endpoint),
       body: body,
@@ -15,12 +21,11 @@ class NotificacionApiRest {
     };
   }
 
-
   generateUrl(endpoint) {
     return `${this.route}:${this.port}/api/${endpoint} `;
   }
 
-  generateMail(anArtist,aMessage,aSubject,aFrom){
+  generateMail(anArtist, aMessage, aSubject, aFrom) {
     return {
       artistId: anArtist.id,
       message: aMessage,
@@ -30,63 +35,64 @@ class NotificacionApiRest {
   }
 
 
-  notificarBajaArtista(data){
-    const jsonBody = 
-    this.generateMail(data.artist,
-      `Hola,el artista ${data.artist.name} se ha dado de baja`,
-      this.unqfy(),
-      'Baja Artista'
-    );
-    
-    return  this.notificarMail(jsonBody);
-    
-  }
-  unqfy(){
-    return 'UNQfy <UNQfy.notifications@gmail.com>';
+  notificarBajaArtista(caso, data) {
+
+    this.borrarArtista(data.artist);
+
   }
 
-  notificarNuevoAlbum(data){
-    const jsonBody = 
-    this.generateMail(
-      data.artist,
-      `Hola, el artista ${data.artist.name} tiene un nuevo Album ${data.album.name}`,
-      this.unqfy(),
-      'Nuevo Album');
+  notificarNuevoAlbum(caso, data) {
+    const jsonBody =
+      this.generateMail(
+        data.artist,
+        `Hola, el artista ${data.artist.name} tiene un nuevo Album ${data.album.name}`,
+        this.unqfy(),
+        caso);
 
-    return this.notificarMail(jsonBody);
+    this.notificarMail(jsonBody);
   }
 
-  notificarMail(jsonBody){
-    
-    const options = this.options('notify',jsonBody);
-    return rp.post(options).then().catch(err=> console.err(err));
 
+  notificarMail(jsonBody) {
+
+    const options = this.options('notify', jsonBody);
+    return rp.post(options)
+      .then(good => console.log('mail enviado :D'))
+      .catch(err => console.error(err.status));
+  }
+
+  borrarArtista(artist) {
+    const jsonBody = {artistId: artist.id};
+
+    const options = this.options('subscriptions', jsonBody);
+    return rp.delete(options)
+      .then(good => console.log('borrado enviado! '))
+      .catch(err => console.error(err.status));
   }
 }
 
 
-class NotificadorUnqfy extends Observer{
+class NotificadorUnqfy extends Observer {
 
-  constructor(){
+  constructor() {
     super();
-    this.apiNotificaciones = new NotificacionApiRest();
-
   }
 
-  update(caso,data){
-
-    switch (caso){
+  update(caso, data) {
+    const api = new NotificacionApiRest();
+    switch (caso) {
 
     case 'Agregar Album':
-      //this.apiNotificaciones.notificarNuevoAlbum(data);
+      console.log(`Se agrego ${data.album.name} a ${data.artist.name}, notificando`);
+      api.notificarNuevoAlbum(caso, data);
 
       break;
     case 'Baja Artista':
-
-      //this.apiNotificaciones.notificarBajaArtista(data);
+      console.log(`Se da de baja a  ${data.artist.name}, notificando`);
+      api.notificarBajaArtista(caso, data);
       break;
     }
   }
 }
 
-module.exports = {NotificadorUnqfy,NotificacionApiRest};
+module.exports = {NotificadorUnqfy, NotificacionApiRest};
