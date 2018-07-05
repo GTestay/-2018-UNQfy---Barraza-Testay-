@@ -1,25 +1,27 @@
-
 class Subject {
 
-  constructor(){
+  constructor() {
     this.observers = [];
   }
 
-  addObserver(anObserver){
-    this.observers.push(anObserver);
+  addObserver(anObserver) {
+    if (!this.observers.includes(anObserver)) {
+      this.observers.push(anObserver);
+    }
   }
 
   removeObserver(anOsberverToRemove) {
     this.observers = this.observers.filter((observer) => observer !== anOsberverToRemove);
   }
-  changed(something,data){
-    this.observers.forEach(observer => observer.update(something,data));
+
+  changed(something, data) {
+    this.observers.forEach(observer => observer.update(something, data));
   }
 }
 
-class Observer{
+class Observer {
 
-  update(something,data){
+  update(something, data) {
 
     throw Error('Need to be redefined by all sub-clases');
 
@@ -27,5 +29,5 @@ class Observer{
 }
 
 module.exports = {
-  Subject,Observer
+  Subject, Observer
 };
