@@ -5,16 +5,24 @@ const bodyParser = require('body-parser');
 const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound, RelatedResourceNotFound, APIError} = require('./Excepciones');
 const unqmod = require('./unqfy');
 const {isNotUndefined} = require('./funcionesAuxiliares');
+const {NotificacionApiRest,NotificadorUnqfy}= require('./notificacionUnqfy');
+
 
 const router = express.Router();
 
-const port = process.env.PORT || 8000;
+const port = process.env.UNQFY_PORT || 8000;
+
+function observar(unqfy){
+  unqfy.addObserver(new NotificadorUnqfy());
+}
 
 function getUNQfy(filename) {
   let unqfy = new unqmod.UNQfy();
   if (fs.existsSync(filename)) {
     unqfy = unqmod.UNQfy.load(filename);
   }
+  //
+  observar(unqfy);
   console.log('Cargar');
   return unqfy;
 }

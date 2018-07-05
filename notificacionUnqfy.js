@@ -4,15 +4,13 @@ const rp = require('request-promise');
 
 class NotificacionApiRest {
   constructor(){
-
     this.route = 'localhost';
-    this.port = 8001;//TODO: leerse de algún lado
-
+    this.port = process.env.NOTIFICATION_PORT || 8001;
   }
   options(endpoint,body) {
     return {
       uri: this.generateUrl(endpoint),
-      body: (body),
+      body: body,
       json: true
     };
   }
@@ -22,22 +20,46 @@ class NotificacionApiRest {
     return `${this.route}:${this.port}/api/${endpoint} `;
   }
 
-
-  notificarBajaArtista(anArtist){
-
-    const jsonBody = {
-      artistId: 1 ,
-      message : 'Baja Artista',
-      from: 'unqfy@gmail.com',
-      to:'nadie',
-
+  generateMail(anArtist,aMessage,aSubject,aFrom){
+    return {
+      artistId: anArtist.id,
+      message: aMessage,
+      from: aFrom,
+      subject: aSubject,
     };
-    const options = this.options('notify',jsonBody);
-
-    rp.post(options);
-
   }
-  notificarNuevoAlbum(anAlbum){
+
+
+  notificarBajaArtista(data){
+    const jsonBody = 
+    this.generateMail(data.artist,
+      `Hola,el artista ${data.artist.name} se ha dado de baja`,
+      this.unqfy(),
+      'Baja Artista'
+    );
+    
+    return  this.notificarMail(jsonBody);
+    
+  }
+  unqfy(){
+    return 'UNQfy <UNQfy.notifications@gmail.com>';
+  }
+
+  notificarNuevoAlbum(data){
+    const jsonBody = 
+    this.generateMail(
+      data.artist,
+      `Hola, el artista ${data.artist.name} tiene un nuevo Album ${data.album.name}`,
+      this.unqfy(),
+      'Nuevo Album');
+
+    return this.notificarMail(jsonBody);
+  }
+
+  notificarMail(jsonBody){
+    
+    const options = this.options('notify',jsonBody);
+    return rp.post(options).then().catch(err=> console.err(err));
 
   }
 }
@@ -56,18 +78,15 @@ class NotificadorUnqfy extends Observer{
     switch (caso){
 
     case 'Agregar Album':
-      this.apiNotificaciones.notificarNuevoAlbum(data);
+      //this.apiNotificaciones.notificarNuevoAlbum(data);
 
       break;
     case 'Baja Artista':
 
-      this.apiNotificaciones.notificarBajaArtista(data);
+      //this.apiNotificaciones.notificarBajaArtista(data);
       break;
-
     }
-
   }
-
 }
 
 module.exports = {NotificadorUnqfy,NotificacionApiRest};

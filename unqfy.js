@@ -3,35 +3,23 @@ const fs = require('fs');
 const {aplanar, isNotUndefined, isNotEmpty} = require('./funcionesAuxiliares');
 
 const {Artist, Album, Track, TrackList, Playlist} = require('./domain');
+const {NotificacionApiRest,NotificadorUnqfy}=require('./notificacionUnqfy');
 
 const {ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException} = require('./Excepciones');
-
+const {Subject} = require('./observerPattern');
 const {Spotify} = require('./Spotify');
 const {MusixMatch} = require('./MusixMatch');
-const {NotificadorUnqfy,NotificacionApiRest}= require('./notificacionUnqfy');
 
-
-
-class UNQfy {
+class UNQfy extends Subject{
 
   constructor() {
+    super();
     this.idAlbum = 0;
     this.idArtist = 0;
     this.artists = [];
     this.playlists = [];
-    this.artistNotificationService = new NotificadorUnqfy();
     this.lyricSearcher = new MusixMatch();
   }
-
-  addSubscriberFor(newArtist) {
-    newArtist.addObserver(this.artistNotificationService);
-  }
-
-  removeArtistSubscription(artist){
-
-    this.artistNotificationService.update('Baja Artista',artist);
-  }
-
 
 
   //Dado un nombre de artista, busca sus albumnes en spotify
@@ -94,7 +82,6 @@ class UNQfy {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
     const newArtist = new Artist(params.name, params.country, this.idForArtist());
     this.artists.push(newArtist);
-    this.addSubscriberFor(newArtist);
     return newArtist;
   }
 
@@ -111,6 +98,12 @@ class UNQfy {
   addAlbumToArtist(artist, params) {
     const newAlbum = new Album(artist.name, params.name, params.year, this.idForAlbum());
     artist.addAlbum(newAlbum);
+
+    let data={};
+    data.artist = artist;
+    data.album = newAlbum;
+    this.changed('Agregar Album',data);
+    
     return newAlbum;
   }
 
@@ -144,7 +137,10 @@ class UNQfy {
   // REMOVE METHODS
   removeArtist(aName) {
     const artistToRemove = this.getArtistByName(aName);
-    this.removeArtistSubscription(artistToRemove);
+    let data = {};
+    data.artist =artistToRemove; 
+
+    this.changed('Baja Artista',data);
 
     const tracksToDelete = artistToRemove.albums.map(album => album.tracks);
 
@@ -322,12 +318,16 @@ class UNQfy {
 
   //Persistence
   save(filename = 'estado.json') {
+    let listenersBkp = this.listeners;
+    this.listeners = [];
     new picklejs.FileSerializer().serialize(filename, this);
+    this.listeners = listenersBkp;
+  
   }
 
   static load(filename = 'estado.json') {
     const fs = new picklejs.FileSerializer();
-    const classes = [MusixMatch,NotificadorUnqfy,NotificacionApiRest,UNQfy, Album, Artist, Playlist, Track, TrackList];
+    const classes = [NotificacionApiRest,NotificadorUnqfy, MusixMatch,UNQfy, Album, Artist, Playlist, Track, TrackList];
     fs.registerClasses(...classes);
     return fs.load(filename);
   }
