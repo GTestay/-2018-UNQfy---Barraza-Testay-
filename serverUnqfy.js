@@ -6,7 +6,7 @@ const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound, Related
 const unqmod = require('./unqfy');
 const {isNotUndefined} = require('./funcionesAuxiliares');
 const {NotificacionApiRest,NotificadorUnqfy}= require('./notificacionUnqfy');
-
+require('dotenv').config();
 
 const router = express.Router();
 
@@ -21,8 +21,7 @@ function getUNQfy(filename) {
   if (fs.existsSync(filename)) {
     unqfy = unqmod.UNQfy.load(filename);
   }
-  //
-  observar(unqfy);
+  // observar(unqfy);
   console.log('Cargar');
   return unqfy;
 }
@@ -39,7 +38,7 @@ function throwException(res, e) {
 }
 
 function errorHandler(err, req, res, next) {
-  console.error(err.name);
+  console.error(err);
   if (err instanceof APIError) {
     res.status(err.status);
     res.json(err);
