@@ -4,62 +4,16 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound, RelatedResourceNotFound, APIError} = require('./Excepciones');
 const {isNotUndefined} = require('./funcionesAuxiliares');
-const {Notificador} = require('./notificador');
-const rp = require('request-promise');
-
+const {Notificador,ApiUnqfy} = require('./notificador');
 
 const router = express.Router();
 
-const port = 8001;
-
-
-
-class ApiUnqfy {
-  constructor(){
-    this.route = 'http://localhost';
-    this.port = 8000;//TODO: leerse de algún lado
-
-  }
-  options(endpoint) {
-    return {
-      uri: this.generateUrl(endpoint),
-      json: true
-    };
-  }
-
-
-  generateUrl(endpoint) {
-    return `${this.route}:${this.port}/api/${endpoint} `;
-  }
-
-  artistExist(artistId){
-    const options = this.options(`artists/${artistId}`);
-    console.log('Buscando Artista');
-
-    return rp.get(options).then(artist=>{
-      console.log('ACERTO');
-      console.log(artist);
-      return true;
-    })
-      .catch(response =>{
-        console.log('ERROR');
-        const err = response.error;
-        if(err.statusCode === 402){
-          throw new ResourceNotFound();
-        }
-      });
-  }
-
-}
-
+const port = process.env.NOTIFICATION_PORT || 8001;
 
 function levantarNotificador(filename) {
-  let notificador = null;
+  let notificador = new Notificador();
   if (fs.existsSync(filename)) {
     notificador = Notificador.load(filename);
-  } else {
-    notificador = new Notificador();
-
   }
   console.log('Cargar');
   return notificador;
@@ -79,7 +33,6 @@ function validateParams(params, req) {
 function run(params, func) {
   return function (req, res) {
     if (validateParams(params, req)) {
-
       const notificador = levantarNotificador('notificador.json');
       const respuesta = func(notificador, req);
       res.json(respuesta);
@@ -105,9 +58,7 @@ function existArtist(artistId) {
 //POST /api/subscribe body = ["artistId","email"];
 router.route('/subscribe').post(run(['artistId','email'], (notificador, req) => {
 
-  console.log('hacer algo');
   existArtist(req.body.artistId).then(asd =>{
-    console.log('registrar mail');
 
     notificador.subscribe(req.body.email, req.body.artistId);
 
@@ -185,11 +136,11 @@ function errorHandler(err, req, res, next) {
   }
 }
 
-/**
+
 router.use('/', (req, res) => {
   throwException(res, new ResourceNotFound);
 });
-*/
+
 app.use(bodyParser.json());
 app.use('/api', router);
 app.use(errorHandler);

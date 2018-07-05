@@ -1,4 +1,7 @@
 const picklejs = require('picklejs');
+const {MailSender} = require('./mailSender');
+const rp = require('request-promise');
+const { ResourceNotFound} = require('./Excepciones');
 
 class Artist {
   constructor(id){
@@ -19,11 +22,19 @@ class Artist {
 class Notificador {
 
   constructor(){
-
+    this.mailSender = new MailSender();
     this.artists = [];
-    //this.mailSender = null;
   }
 
+
+  notify(artistId,subject,message,from){
+    const artist =this.find(artistId);
+
+    this.mailSender.sendMail(artist,subject,message,from)
+        .catch(err => {
+          throw new Error(err.message);
+        });
+  }
 
   subscribe(email,artistId){
     let artist = this.find(artistId);
@@ -81,6 +92,41 @@ class Notificador {
 
 }
 
+class ApiUnqfy {
+  constructor(){
+    this.route = 'http://localhost';
+    this.port = process.env.UNQFY_PORT ;
+
+  }
+  options(endpoint) {
+    return {
+      uri: this.generateUrl(endpoint),
+      json: true
+    };
+  }
+
+  generateUrl(endpoint) {
+    return `${this.route}:${this.port}/api/${endpoint} `;
+  }
+
+  artistExist(artistId){
+    const options = this.options(`artists/${artistId}`);
+    console.log('Buscando Artista');
+
+    return rp.get(options).then(artist=>{
+      console.log('Artista Encontrado');
+      return true;
+    })
+      .catch(response =>{
+        const err = response.error;
+        console.err(err);
+        if(err.statusCode === 404){
+          throw new ResourceNotFound();
+        }
+      });
+  }
+
+}
 
 
-module.exports={Notificador};
+module.exports={Notificador,ApiUnqfy};
