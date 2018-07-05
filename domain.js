@@ -1,5 +1,4 @@
 const {aplanar, compareStrings} = require('./funcionesAuxiliares');
-const {Subject} = require('./observerPattern');
 
 class TrackList {
   constructor(name) {
@@ -69,9 +68,8 @@ class Album extends TrackList {
   }
 }
 
-class Artist extends Subject{
+class Artist {
   constructor(name, country, id) {
-    super();
     this.name = name;
     this.albums = [];
     this.country = country;
@@ -80,7 +78,6 @@ class Artist extends Subject{
 
   addAlbum(anAlbum) {
     this.albums.push(anAlbum);
-    this.notificar(anAlbum);
   }
 
   removeAlbum(aName) {
@@ -91,7 +88,6 @@ class Artist extends Subject{
     const albumSearched = this.albums.find(a => a.name === aName);
     return albumSearched.tracks;
   }
-
 
   tracksWithGenres(genres) {
     return aplanar(this.albums.map(album => album.tracksWithGenres(genres)));
@@ -116,13 +112,6 @@ class Artist extends Subject{
   toString() {
     return `name: ${this.name}, country: ${this.country}, id: ${this.id}`;
   }
-
-  //metodo para notificaciones
-
-  notificar(unAlbum){
-    this.updateAll('Agregar Album',unAlbum);
-  }
-
 }
 
 class Playlist extends TrackList {

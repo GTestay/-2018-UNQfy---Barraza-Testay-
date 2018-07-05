@@ -52,5 +52,6 @@ typings/
 estado.json
 notificador.json
 spotifyCreds.json
+.env
 
 .idea

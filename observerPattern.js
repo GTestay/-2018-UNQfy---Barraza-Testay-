@@ -12,14 +12,14 @@ class Subject {
   removeObserver(anOsberverToRemove) {
     this.observers = this.observers.filter((observer) => observer !== anOsberverToRemove);
   }
-  updateAll(something,someData){
-    this.observers.forEach(observer => observer.update(something,someData));
+  changed(something,data){
+    this.observers.forEach(observer => observer.update(something,data));
   }
 }
 
 class Observer{
 
-  update(something,someData){
+  update(something,data){
 
     throw Error('Need to be redefined by all sub-clases');
 

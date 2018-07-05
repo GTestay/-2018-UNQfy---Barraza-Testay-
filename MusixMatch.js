@@ -6,7 +6,7 @@ const {generateToken} = require('./funcionesAuxiliares');
 class MusixMatch {
   constructor() {
     this.api = 'http://api.musixmatch.com/ws/1.1';
-    this.token = generateToken('./tokenApiMusic.json');
+    this.token = process.env.TOKEN_MUSIXMATCH.toString();
   }
 
   searchLyricsFor(track) {
@@ -20,7 +20,7 @@ class MusixMatch {
     return {
       uri: this.api + endpoint,
       qs: {
-        apikey: '55cfe972c4aa0776d9d46382ee6e7122',
+        apikey: this.token,
       },
       json: true
     };
