@@ -49,8 +49,7 @@ typings/
 # dotenv environment variables file
 .env
 
-proyectoEntero/estado.json
-proyectoEntero/notificador.json
+estado.json
 spotifyCreds.json
 
 .idea

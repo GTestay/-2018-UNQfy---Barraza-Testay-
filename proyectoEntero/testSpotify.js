@@ -11,7 +11,7 @@ chai.use(chaiAsPromised);
 const assert = chai.assert;
 const expect = chai.expect;
 
-const moduleUnqfy = require('./unqfy');
+const moduleUnqfy = require('../unqfy/main');
 const moduleSpotify = require('./Spotify');
 const moduleMusixMatch = require('./MusixMatch');
 

@@ -3,7 +3,7 @@ const app = express();
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const {BadRequest, Failure, ResourceAlreadyExistError, ResourceNotFound, RelatedResourceNotFound, APIError} = require('./Excepciones');
-const unqmod = require('./unqfy');
+const unqmod = require('../unqfy/main');
 const {isNotUndefined} = require('./funcionesAuxiliares');
 const {NotificacionApiRest,NotificadorUnqfy}= require('./notificacionUnqfy');
 require('dotenv').config();

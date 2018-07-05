@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 
 const assert = require('chai').assert;
-const libunqfy = require('./unqfy');
+const libunqfy = require('../unqfy/main');
 const {NotificadorUnqfy} = require('./notificacionUnqfy');
 
 

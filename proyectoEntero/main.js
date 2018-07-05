@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-const fs = require('fs');const unqmod = require('./unqfy');
+const fs = require('fs');const unqmod = require('../unqfy/main');
 const {isNotUndefined, isNotEmpty, generarDiccionario, print, printArray} = require('./funcionesAuxiliares');
 const {ArtistNotFoundException,AlbumNotFoundException,TrackNotFoundException} = require('./Excepciones');
 
