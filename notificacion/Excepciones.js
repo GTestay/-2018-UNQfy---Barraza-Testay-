@@ -42,6 +42,12 @@ class APIError extends Error {
     this.errorCode = errorCode;
   }
 }
+class ConnectionRefused extends APIError {
+  constructor() {
+    super('ConnectionRefused', 402, 'CONNECTION_REFUSED');
+  }
+}
+
 
 class BadRequest extends APIError {
   constructor() {
@@ -77,6 +83,6 @@ class Failure extends APIError {
 }
 
 module.exports = {
-  ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException,
+  ArtistNotFoundException, AlbumNotFoundException, TrackNotFoundException,ConnectionRefused,
   APIError, Failure, ResourceAlreadyExistError, ResourceNotFound, BadRequest, RelatedResourceNotFound
 };
