@@ -1,10 +1,11 @@
 const {Observer} = require('./observerPattern');
 const rp = require('request-promise');
+require('dotenv').config();
 
 
 class NotificacionApiRest {
   constructor() {
-    this.route = 'http://localhost';
+    this.route = process.env.NOTIFICATION_ROUTE || 'http://localhost';
     this.port = process.env.NOTIFICATION_PORT || 8001;
   }
 

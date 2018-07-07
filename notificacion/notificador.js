@@ -2,6 +2,7 @@ const picklejs = require('picklejs');
 const {MailSender} = require('./mailSender');
 const rp = require('request-promise');
 const { ResourceNotFound} = require('./Excepciones');
+require('dotenv').config();
 
 
 class Artist {
@@ -100,7 +101,7 @@ class Notificador {
 
 class ApiUnqfy {
   constructor(){
-    this.route = 'http://localhost';
+    this.route = process.env.UNQFY_ROUTE ||'http://localhost';
     this.port = process.env.UNQFY_PORT ;
 
   }

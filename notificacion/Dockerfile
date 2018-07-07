@@ -9,6 +9,10 @@ ENV DEBUG=true
 # Crea un directorio y nos movemos ahí
 WORKDIR /home/node/notificacion
 
+
+# Copia los fuentes dentro del container
+COPY . /home/node/notificacion/
+
 # Copia el package.json package-lock.json en /home/node/my_node_app
 #COPY package.json .
 #COPY package-lock.json .
@@ -16,18 +20,16 @@ WORKDIR /home/node/notificacion
 # Ejecuta npm install. Esto produce que se instalen todas las dependencias necearias para correr la aplicación
 RUN ["npm", "install"]
 
-# Expone el puerto 5000 donde corre la aplicación
-EXPOSE 5001
+# Expone el puerto 8000 donde corre la aplicación
+EXPOSE 8001
 
-# Copia los fuentes dentro del container
-COPY . /home/node/notificacion/
 
 # Le da permisos al usuario node para escribir en /home/node/my_node_app
 # Como comentario, notar que el comando RUN nos permite ejecutar culquier comando bash valido.
 RUN chown node:users /home/node/
 
 # Habilita el usuario node. Por defecto, los containers corren los comandos con el usuario root
-USER node
+#USER node
 
 # Comando por defecto sino se provee uno al hacer docker run
 # El comando corre el servicio
@@ -37,7 +39,9 @@ CMD [ "node", "serviceNotificacion" ]
 
 
 # Para construir la imagen
-# docker build -t <nombre_de_la_imagen> .
+# sudo docker build -t notification_image .
 
-# Para correr el container
-# docker run -p 5001:5001 --name <nombre_container> --user node <nombre_de_la_imagen>
+# Para correr el container --user node
+# sudo docker run -p 8001:8001 --name notification notification_image
+
+# sudo docker run --net unqfynet --ip 172.20.0.22 -p 8001:8001 --name notificacion notification_image

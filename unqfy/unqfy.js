@@ -1,6 +1,7 @@
 const picklejs = require('picklejs');
 const fs = require('fs');
 const {aplanar, isNotUndefined, isNotEmpty} = require('./funcionesAuxiliares');
+require('dotenv').config();
 
 const {Artist, Album, Track, TrackList, Playlist} = require('./domain');
 const {NotificacionApiRest, NotificadorUnqfy} = require('./notificacionUnqfy');
