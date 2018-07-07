@@ -102,7 +102,7 @@ class Notificador {
 class ApiUnqfy {
   constructor(){
     this.route = process.env.UNQFY_ROUTE ||'http://localhost';
-    this.port = process.env.UNQFY_PORT ;
+    this.port = process.env.UNQFY_PORT || 8000 ;
 
   }
   options(endpoint) {
