@@ -35,8 +35,7 @@ function run(params, func) {
   return function (req, res) {
     if (validateParams(params, req)) {
       const notificador = levantarNotificador('notificador.json');
-      const respuesta = func(notificador, req);
-      res.json(respuesta);
+      func(notificador, req, res);
     } else {
       throw new BadRequest;
     }
@@ -52,8 +51,7 @@ function existArtist(artistId) {
   const unqfy = new ApiUnqfy();
 
   return unqfy.artistExist(artistId)
-    .then()
-    .catch(boolean => {
+    .then(boolean => {
       if (!boolean) {
         throw new ResourceNotFound();
       }
@@ -61,66 +59,95 @@ function existArtist(artistId) {
 
 }
 
+function enviarResultado(promise, res) {
+  promise
+    .then(result => res.json(result))
+    .catch(err => res.send(err));
+
+}
 
 //POST /api/subscribe body = ["artistId","email"];
-router.route('/subscribe').post(run(['artistId', 'email'], (notificador, req) => {
+router.route('/subscribe').post(run(['artistId', 'email'], (notificador, req, res) => {
 
-  existArtist(req.body.artistId).then(asd => {
+  const promise = existArtist(req.body.artistId).then(asd => {
 
-    notificador.subscribe(req.body.email, req.body.artistId);
+    return notificador.subscribe(req.body.email, req.body.artistId);
 
-  }).then(not =>
-    guardarNotificador(notificador, 'notificador.json')
-  ).catch(boolean => {
-    if (!boolean) {
-      throw new ResourceNotFound();
-    }
-  });
+  }).then(value => {
+    guardarNotificador(notificador, 'notificador.json');
+    return value;
+  }
+  );
+  enviarResultado(promise, res);
 
 }));
 
 //POST /api/unsubscribe  body = ["artistId","email"];
-router.route('/unsubscribe').post(run(['artistId', 'email'], (notificador, req) => {
+router.route('/unsubscribe').post(run(['artistId', 'email'], (notificador, req, res) => {
 
-  existArtist(req.body.artistId).then(
-    notificador.unsubscribe(req.body.artistId, req.body.email)
-  ).then(not =>
-    guardarNotificador(notificador, 'notificador.json')
-  );
+  const promise = existArtist(req.body.artistId).then(bool => {
+    return notificador.unsubscribe(req.body.artistId, req.body.email);
 
+  }).then(value => {
 
+    guardarNotificador(notificador, 'notificador.json');
+    return value;
+  });
+
+  enviarResultado(promise, res);
 }));
 
 //POST /api/notify
 // "artistId": 0
 // "subject": "Nuevo Album para artsta Chano",
 // "message": "Se ha agregado el album XXX al artista Chano",
-// "from": "UNQfy <UNQfy.notifications@gmail.com>",
-router.route('/notify').post(run(['artistId', 'subject', 'message', 'from'], (notificador, req) => {
 
-  existArtist(req.body.artistId).then(
+// "from": "UNQfy <UNQfy.notifications@gmail.com>",
+router.route('/notify').post(run(['artistId', 'subject', 'message', 'from'], (notificador, req, res) => {
+
+  const promise = existArtist(req.body.artistId).then(
     notificador.notify(req.body.artistId, req.body.subject, req.body.message, req.body.from)
-  ).then(not =>
-    guardarNotificador(notificador, 'notificador.json')
-  );
+  ).then(value => {
+    guardarNotificador(notificador, 'notificador.json');
+    return value;
+  });
+  enviarResultado(promise, res);
+
 }));
 
 //GET /api/subscriptions/id
 // "subscriptors": [<email1>, <email2>]
-router.route('/subscriptions/:id').get(run([], (notificador, req) => {
+router.route('/subscriptions/:id').get(run([], (notificador, req, res) => {
 
-  return notificador.subscriptions(req.params.id);
+  const promise = existArtist(req.params.id).then(bool => {
+    return notificador.subscriptions(req.params.id);
+  });
+
+  enviarResultado(promise, res);
+
+}));
+
+//GET /api/all
+
+router.route('/all').get(run([], (notificador, req, res) => {
+
+
+  res.json(notificador.artists);
+
 
 }));
 
 //DELETE /api/subscriptions body "artistId": <artistID>,
-router.route('/subscriptions').delete(run(['artistId'], (notificador, req) => {
+router.route('/subscriptions').delete(run(['artistId'], (notificador, req, res) => {
 
-  existArtist(req.body.artistId).then(
+  const promise = existArtist(req.body.artistId).then(
     notificador.removeArtist(req.body.artistId)
-  ).then(not =>
-    guardarNotificador(notificador, 'notificador.json')
+  ).then(value => {
+    guardarNotificador(notificador, 'notificador.json');
+    return value;
+  }
   );
+  enviarResultado(promise, res);
 
 }));
 
