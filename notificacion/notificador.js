@@ -1,85 +1,78 @@
 const picklejs = require('picklejs');
 const {MailSender} = require('./mailSender');
 const rp = require('request-promise');
-const { ResourceNotFound} = require('./Excepciones');
+const {ResourceNotFound} = require('./Excepciones');
+require('dotenv').config();
 
 
 class Artist {
-  constructor(id){
+  constructor(id) {
     this.artistId = id || 0;
     this.emails = [];
   }
 
-  addEmail(email){
-    this.emails.push(email);
+  addEmail(email) {
+    if (!this.emails.includes(email)) {
+      this.emails.push(email);
+    }
   }
 
 
-  removeEmail(email){
+  removeEmail(email) {
     this.emails = this.emails.filter(e => e !== email);
   }
 }
 
 class Notificador {
 
-  constructor(){
+  constructor() {
     this.mailSender = new MailSender();
     this.artists = [];
   }
 
 
-  notify(artistId,subject,message,from){
-    const artist =this.find(artistId);
-    if(undefined === artist){
+  notify(artistId, subject, message, from) {
+    const artist = this.find(artistId);
+    if (undefined === artist) {
       throw new ResourceNotFound();
     }
-    this.mailSender.sendMail(artist,subject,message,from)
+    this.mailSender.sendMail(artist, subject, message, from)
       .catch(err => {
         console.error(err);
       });
   }
 
-  subscribe(email,artistId){
+  subscribe(email, artistId) {
     let artist = this.find(artistId);
 
-    if(artist === undefined){
+    if (artist === undefined) {
       artist = new Artist(artistId);
       this.artists.push(artist);
-
     }
     artist.addEmail(email);
     console.log(artist);
-
+    return artist;
   }
 
 
-  unsubscribe(artistId,email){
+  unsubscribe(artistId, email) {
 
     let artist = this.find(artistId);
 
-    if(artist === undefined){
-      artist = new Artist(artistId);
-      this.artists.push(artist);
-
-    }
     artist.removeEmail(email);
+    return artist;
   }
 
-  find(artistId){
+  find(artistId) {
 
     return this.artists.find(a => a.artistId == artistId);
   }
 
-  subscriptions(artistId){
-    const artist = this.find(artistId);
-    if(undefined !== artist){
-      return artist.emails ;
-    }else{
-      throw new ResourceNotFound();
-    }
+  subscriptions(artistId) {
+    return this.find(artistId);
   }
 
-  removeArtist(artistId){
+  removeArtist(artistId) {
     this.artists = this.artists.filter(a => a.artistId !== artistId);
   }
 
@@ -91,7 +84,7 @@ class Notificador {
 
   static load(filename = 'notificador.json') {
     const fs = new picklejs.FileSerializer();
-    const classes = [MailSender,Notificador,Artist];
+    const classes = [MailSender, Notificador, Artist];
     fs.registerClasses(...classes);
     return fs.load(filename);
   }
@@ -99,11 +92,12 @@ class Notificador {
 }
 
 class ApiUnqfy {
-  constructor(){
-    this.route = 'http://localhost';
-    this.port = process.env.UNQFY_PORT ;
+  constructor() {
+    this.route = process.env.UNQFY_ROUTE || 'http://localhost';
+    this.port = process.env.UNQFY_PORT || 8000;
 
   }
+
   options(endpoint) {
     return {
       uri: this.generateUrl(endpoint),
@@ -115,24 +109,21 @@ class ApiUnqfy {
     return `${this.route}:${this.port}/api/${endpoint} `;
   }
 
-  artistExist(artistId){
+  artistExist(artistId) {
     const options = this.options(`artists/${artistId}`);
-    console.log('Buscando Artista');
+    console.log('Buscando Artista ' + artistId);
 
-    return rp.get(options).then(artist=>{
+    return rp.get(options).then(artist => {
       console.log('Artista Encontrado');
       return true;
     })
-      .catch(response =>{
-        const err = response.error;
-        console.error(err);
-        if(err.statusCode === 404){
-          throw new ResourceNotFound();
-        }
+      .catch(err => {
+        console.log('Artista no existe');
+        return false;
       });
   }
 
 }
 
 
-module.exports={Notificador,ApiUnqfy};
+module.exports = {Notificador, ApiUnqfy};
